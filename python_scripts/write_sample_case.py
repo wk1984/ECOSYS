@@ -194,7 +194,7 @@ if __name__ == '__main__':
 
     # 2.6 生成天气文件头
     # 注意: 实际的天气数据需要另外生成并追加到此文件
-    io_handler.write_weather_header_from_dict(weather_file_header, "w1980022852")
+    io_handler.write_weather_header_from_dict(weather_file_header)
 
     # 2.7 生成简单的输出定义文件
     with open('tsl', 'wt') as fid:
