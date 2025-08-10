@@ -298,7 +298,7 @@ class EcosysIO:
         except IOError as e:
             print(f"写入文件时出错: {e}")
 
-    def write_weather_header_from_dict(self, header_data: dict, output_path: str):
+    def write_weather_header_from_dict(self, header_data: dict):
         """
         根据一个结构化的 Python 字典，生成原始的四行天气文件头。
 
@@ -344,11 +344,14 @@ class EcosysIO:
             precip_chem.get('undefined_parameter', 0.0)
         ]
         lines.append(','.join(map(str, line4_values)))
+        
+        print('WARNING: 注意：这里我们仅出头部，实际天气数据需要另外追加')
+        for i in [0,1,2,3]: print(lines[i])
 
-        try:
-            with open(output_path, 'w') as f:
-                # 注意：这里我们仅写入头部，实际天气数据需要另外追加
-                f.write('\n'.join(lines) + '\n')
-            print(f"天气文件头已成功生成在: {output_path}")
-        except IOError as e:
-            print(f"写入文件时出错: {e}")
+#         try:
+#             with open(output_path, 'w') as f:
+#                 # 注意：这里我们仅写入头部，实际天气数据需要另外追加
+#                 f.write('\n'.join(lines) + '\n')
+#             print(f"天气文件头已成功生成在: {output_path}")
+#         except IOError as e:
+#             print(f"写入文件时出错: {e}")
