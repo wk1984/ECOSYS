@@ -1,7 +1,12 @@
 from functions import EcosysIO
 import os
 
-proj_path = '.'
+proj_path = 'test'
+
+if os.path.isdir(proj_path):
+    pass
+else:
+    os.mkdir(proj_path)
 
 # =======================================================================
 #                           --- 使用示例 ---
