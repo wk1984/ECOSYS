@@ -1,5 +1,6 @@
 import collections.abc
 
+
 class EcosysIO:
     """
     一个用于处理与 ecosys 模型相关的各类输入文件读写的工具类。
@@ -98,7 +99,8 @@ class EcosysIO:
         if not isinstance(lower_bc, collections.abc.Iterable):
             lower_bc = [lower_bc]
 
-        full_bc_line_values = list(bc_surf) + list(bc_sub) + list(dist_wt) + list(lower_bc)
+        full_bc_line_values = list(
+            bc_surf) + list(bc_sub) + list(dist_wt) + list(lower_bc)
         lines.append(' '.join(map(str, full_bc_line_values)))
 
         lines.append(str(params.get('width_we_column', 1.0)))
@@ -128,7 +130,8 @@ class EcosysIO:
         slope_ns = params.get('slope_ns_deg', 0.0)
         placeholder = params.get('placeholder_value', 0.0)
 
-        line1_values = list(grid_struct) + [aspect, slope_ew, slope_ns, placeholder]
+        line1_values = list(grid_struct) + \
+            [aspect, slope_ew, slope_ns, placeholder]
         lines.append(' '.join(map(str, line1_values)))
 
         soil_file = params.get('soil_data_file', 'default_soil.txt')
@@ -162,7 +165,8 @@ class EcosysIO:
             'num_additional_layers_w_data', 'num_additional_layers_wo_data',
             'profile_type'
         ]
-        global_values = [globals_params.get(key, 0.0) for key in global_keys_in_order]
+        global_values = [globals_params.get(
+            key, 0.0) for key in global_keys_in_order]
         lines.append(','.join(map(str, global_values)))
 
         layer_keys_in_order = [
@@ -219,7 +223,8 @@ class EcosysIO:
             formatted_values = []
             for v in values:
                 if isinstance(v, float) and (v < 1e-3 or v > 1e4) and v != 0.0:
-                    formatted_values.append(f"{v:.1E}".replace("E-0", "E-").replace("E+0", "E+"))
+                    formatted_values.append(f"{v:.1E}".replace(
+                        "E-0", "E-").replace("E+0", "E+"))
                 else:
                     formatted_values.append(str(v))
             lines.append(' '.join(formatted_values))
@@ -240,23 +245,59 @@ class EcosysIO:
         output_path (str): 输出文件的路径。
         """
         lines = []
-        
+
         grid_cell = config_data.get('grid_cell', '1 1 1 1')
         pft_definitions = config_data.get('pft_definitions', [])
         pft_count = len(pft_definitions)
-        
+
         line1 = f"{grid_cell} {pft_count}"
         lines.append(line1)
-        
+
         line2_parts = []
         for pft in pft_definitions:
             crop_file = pft.get('crop_file', 'unknown_crop')
             planting_file = pft.get('planting_file', 'unknown_planting')
             line2_parts.append(crop_file)
             line2_parts.append(planting_file)
-            
+
         lines.append(' '.join(line2_parts))
-        
+
+        try:
+            with open(output_path, 'w') as f:
+                f.write('\n'.join(lines))
+            print(f"文件已成功生成在: {output_path}")
+        except IOError as e:
+            print(f"写入文件时出错: {e}")
+
+    def write_planting_data_from_config(self, config_data: dict, output_path: str):
+        """
+        根据配置字典生成一个 planting_data 格式的文件 (如 grassp)。
+        这个函数目前只处理种植行，因为示例文件中不包含收获事件。
+
+        参数:
+        config_data (dict): 包含所有种植参数的字典。
+        output_path (str): 输出文件的路径。
+        """
+        lines = []
+
+        # --- 1. 构造第一行: 种植参数 ---
+        planting_info = config_data.get("planting", {})
+        if planting_info:
+            line1_values = [
+                planting_info.get("date_ddmmyyyy", "01019999"),
+                planting_info.get("initial_density_m2", 0),
+                planting_info.get("seeding_depth_m", 0.0)
+            ]
+            lines.append(' '.join(map(str, line1_values)))
+
+        # --- (可选) 构造收获/放牧行 ---
+        # 这个函数可以被扩展来处理收获事件，但对于 grassp 文件，这部分会跳过。
+        harvesting_events = config_data.get("harvesting_events", [])
+        for event in harvesting_events:
+            # 在这里添加逻辑来构建收获事件行
+            pass
+
+        # --- 2. 写入文件 ---
         try:
             with open(output_path, 'w') as f:
                 f.write('\n'.join(lines))
@@ -281,7 +322,7 @@ class EcosysIO:
             'annual_change_params_1', 'annual_change_params_2', 'annual_change_params_3', 'annual_change_params_4',
             'calc_and_output_freq'
         ]
-        
+
         for key in keys_in_order:
             value = params.get(key)
             if isinstance(value, list):
@@ -289,7 +330,7 @@ class EcosysIO:
             elif value is not None:
                 lines.append(str(value))
             else:
-                lines.append("") 
+                lines.append("")
 
         try:
             with open(output_path, 'w') as f:
@@ -326,7 +367,7 @@ class EcosysIO:
             global_params.get('time_of_solar_noon', 0.0)
         ]
         lines.append(','.join(map(str, line3_values)))
-        
+
         precip_chem = header_data.get('precipitation_chemistry', {})
         line4_values = [
             precip_chem.get('pH', 0.0),
@@ -344,9 +385,10 @@ class EcosysIO:
             precip_chem.get('undefined_parameter', 0.0)
         ]
         lines.append(','.join(map(str, line4_values)))
-        
+
         print('WARNING: 注意：这里我们仅出头部，实际天气数据需要另外追加')
-        for i in [0,1,2,3]: print(lines[i])
+        for i in [0, 1, 2, 3]:
+            print(lines[i])
 
 #         try:
 #             with open(output_path, 'w') as f:
