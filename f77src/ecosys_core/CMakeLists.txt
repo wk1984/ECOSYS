@@ -72,7 +72,6 @@ set(ECOSYS_SOURCES
 	readi.f
 	readq.f
 	reads.f
-	wrdiag.f
 	redist.f
 	routp.f
 	routq.f
