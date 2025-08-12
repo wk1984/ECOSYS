@@ -20,19 +20,19 @@ if __name__ == '__main__':
 
     # 1.1 Runscript 配置
     plant_management_files = ['pft_arctic_p'] * 1
-    plant_management_files.extend(['pft_arctic_g']*2)
+    plant_management_files.extend(['pft_arctic_g']*5)
 
     my_config = {
         "SETUP_GENERAL": {
             "grid_dims": [1, 1, 1, 1, 1],
             "site_data_file": "st022852.txt",
             "topography_data_file": "tp022852.txt",
-            "num_scenes": 3,
+            "num_scenes": 6,
             "num_runs": 1
         },
         "SETUP_SCENES": {
             "weather_data_files": 'w1980022852',
-            "weather_options_files": ['opt1800', 'opt1801', 'opt1802'],
+            "weather_options_files": ['opt1800', 'opt1801', 'opt1802', 'opt1803', 'opt1804', 'opt1805'],
             "land_management_files": 'NO',
             "plant_management_files": plant_management_files,
             "soil_output_1": 'NO',
@@ -188,7 +188,7 @@ if __name__ == '__main__':
             'generate_files_data': "NO", 'generate_checkpoint': "NO", 'resume_from_earlier': "NO",
             'annual_change_params_1': [0.0]*10, 'annual_change_params_2': [0.0]*10,
             'annual_change_params_3': [0.0]*10, 'annual_change_params_4': [0.0]*10,
-            'calc_and_output_freq': [24, 24, 24, 1, -1, 0]
+            'calc_and_output_freq': [24, 24, 1, 1, -1, 0]
             #     NPX=number of cycles per hour for water,heat,solute flux calcns
             #     NPY=number of cycles per NPX for gas flux calcns
             #     JOUT,IOUT,KOUT=output frequency for hourly,daily,checkpoint data
@@ -240,7 +240,7 @@ if __name__ == '__main__':
         pft_arctic_g_config, os.path.join(proj_path, "pft_arctic_g"))
 
     # 2.5 循环生成多个天气选项文件
-    for year in range(1800, 1803):
+    for year in range(1800, 1806):
         opt_config = opt_base_config.copy()
         opt_config['WEATHER_OPTIONS']['scenario_start_date'] = f"0101{year}"
         opt_config['WEATHER_OPTIONS']['scenario_end_date'] = f"3112{year}"
