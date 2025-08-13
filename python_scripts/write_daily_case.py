@@ -198,8 +198,8 @@ if __name__ == '__main__':
 
     # 1.8 Weather Header Config
     weather_file_header = {
-        "timestep": 'D', 'calendar': 'J', 'num_time_var': '03', 'num_climate': '05',
-        'time_format': 'YMD', "variables": "MNHWPR", "variable_units": "KKCSMW",
+        "timestep": 'D', 'calendar': 'G', 'num_time_var': '03', 'num_climate': '06',
+        'time_format': 'YMD', "variables": "MNHWPR", "variable_units": "KKDSMZ",
         "global_parameters": {
             "windspeed_measurement_height": 10.00, "flag_for_z0g_with_vegetation": 1.00,
             "time_of_solar_noon": 22.04
