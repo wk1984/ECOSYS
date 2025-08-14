@@ -32,7 +32,7 @@ if __name__ == '__main__':
 
     # 1.1 Runscript 配置
     plant_management_files = ['pft_arctic_p'] * 1
-    plant_management_files.extend(['pft_arctic_p']*10)
+    plant_management_files.extend(['pft_arctic_g']*19)
 
     my_config = {
         "SETUP_GENERAL": {
@@ -44,8 +44,7 @@ if __name__ == '__main__':
         },
         "SETUP_SCENES": {
             "weather_data_files": 'wea1980',
-            "weather_options_files": ['opt1800', 'opt1801', 'opt1802', 'opt1803', 'opt1804', 'opt1805',
-                                      'opt1806','opt1807','opt1808','opt1809','opt1810'],
+            "weather_options_files": ['opt' + str(i) for i in range(1970, 1990)],
             "land_management_files": 'NO',
             "plant_management_files": plant_management_files,
             "soil_output_1": 'NO',
@@ -86,7 +85,7 @@ if __name__ == '__main__':
 
     # 1.4 Soil Data 配置
     
-    depth_list = [0.01, 0.05, 0.15, 0.3, 0.5, 0.8, 1.2, 1.6, 2.0, 2.4, 2.8, 3.2]
+    depth_list = [0.01, 0.055, 0.1, 0.11, 0.155, 0.2, 0.21, 0.255, 0.3, 0.31, 0.355, 0.4, 0.45, 0.5, 0.55, 0.6, 0.7, 0.9, 1.1, 1.3]
     n_depth = len(depth_list)
     
     my_soil_config = {
@@ -112,59 +111,60 @@ if __name__ == '__main__':
             'num_additional_layers_wo_data': 0.0, 
             'profile_type': 0.0
         },
+        
         "SOIL_LAYERS": {
             'layer_depth_bottom_m': depth_list,
-            'bulk_density_mg_m3': [0.36]*3 + [0.58]*3+[0.80]*6,
-            'field_capacity_m3_m3': [-1.0]*n_depth, 
-            'wilting_point_m3_m3': [-1.0]*n_depth,
-            'vertical_ksat_mm_h': [-1.0]*n_depth, 
+            'bulk_density_mg_m3': [0.36, 0.36, 0.42, 0.46, 0.46, 0.58, 0.69, 0.77, 0.79, 0.64, 0.55, 0.36, 0.36, 0.36, 0.79, 0.64, 0.55, 0.36, 0.36, 0.36],
+            'field_capacity_m3_m3': [0.38, 0.38, 0.38, 0.43, 0.43, 0.43, 0.47, 0.47, 0.47, 0.43, 0.39, 0.25, 0.25, 0.25, 0.47, 0.43, 0.39, 0.25, 0.25, 0.25], 
+            'wilting_point_m3_m3': [0.16, 0.16, 0.16, 0.13, 0.13, 0.13, 0.14, 0.14, 0.14, 0.14, 0.08, 0.11, 0.11, 0.11, 0.14, 0.14, 0.08, 0.11, 0.11, 0.11],
+            'vertical_ksat_mm_h': [16.0, 16.0, 16.0, 4.5, 4.5, 4.5, 22.6, 22.6, 22.6, 22.6, 22.6, 545.0, 545.0, 545.0, 22.6, 545.0, 545.0, 545.0, 545.0, 545.0], 
             'lateral_ksat_mm_h': [-1.0]*n_depth,
-            'sand_contents_kg_mg': [410.0]*4 + [330.14]*4 + [180.0]*4,
-            'silt_contents_kg_mg': [318.0]*4 + [184.49]*4 + [20.0]*4,
-            'macropore': [0.0]*n_depth, 
-            'rock_fraction': [0.0]*n_depth,
-            'ph': [5.77]*4 + [5.8]*4 + [4.35]*8 + [0.0]*4,
-            'cation_exchange_capacity': [20.00]*n_depth,
-            'anion_exchange_capacity': [3.0]*n_depth,
-            'total_soc_kg_mg': [3.87, 2.87, 2.6, 2.6, 2.0, 2.0, 2.0, 2.0, 3.0, 0.5, 0.5, 0.5],
-            'poc_kg_mg': [0.0]*n_depth, 
+            'sand_contents_kg_mg': [318, 318, 318, 318, 318, 517, 517, 382, 382, 68, 68, 517, 517, 517, 382, 68, 68, 517, 517, 517],
+            'silt_contents_kg_mg': [410, 410, 410, 410, 410, 311, 311, 335, 335, 462, 462, 361, 361, 361, 335, 462, 462, 361, 361, 361],
+            'macropore': [0]*n_depth, 
+            'rock_fraction': [0]*n_depth,
+            'ph': [5.55, 5.55, 5.55, 5.25, 5.25, 5.16, 5.16, 5.16, 5.16, 5.16, 5.16, 5.06, 5.06, 5.06, 5.16, 5.16, 5.16, 5.06, 5.06, 5.06],
+            'cation_exchange_capacity': [28.1, 28.1, 28.1, 28.1, 28.1, 28.1, 28.1, 29.9, 20.1, 19.7, 19.7, 19.7, 19.7, 19.7, 20.1, 19.7, 19.7, 19.7, 19.7, 19.7],
+            'anion_exchange_capacity': [0.0]*n_depth,
+            'total_soc_kg_mg': [448.0, 448.0, 395.0, 342.0, 343.0, 203.0, 135.0, 124.0, 121.0, 129.0, 123.0, 166.0, 166.0, 166.0, 121.0, 129.0, 123.0, 166.0, 166.0, 166.0],
+            'poc_kg_mg': [17.9, 17.9, 15.8, 15.2, 15.2, 10.1, 7.7, 8.3, 8.1, 8.6, 8.2, 11.1, 11.1, 11.1, 8.1, 8.6, 8.2, 11.1, 11.1, 11.1], 
             'son_g_mg': [-1.0]*n_depth, 
             'sop_g_mg': [-1.0]*n_depth,
-            'soluble_exch_nh4_g_mg': [3.0]*3 + [1.0]*9,
-            'soluble_exch_no3_g_mg': [12.0]*3 + [1.0]*9,
-            'soluble_exch_h2po4_g_mg': [10.0]*n_depth,
-            'soluble_al_g_mg': [-1.0]*n_depth, 
-            'soluble_fe_g_mg': [-1.0]*n_depth,
-            'soluble_ca_g_mg': [40.0]*n_depth, 
-            'soluble_mg_g_mg': [0.0]*3 + [18.0]*9,
-            'soluble_na_g_mg': [0.07]*3 + [0.05]*3 + [0.01]*6,
-            'soluble_k_g_mg': [0.0]*n_depth, 
-            'soluble_so4s_g_mg': [48.0]*n_depth,
-            'soluble_cl_g_mg': [35.0]*n_depth, 
-            'alpo4_mineral_g_mg': [50.0]*n_depth,
-            'fepo4_mineral_g_mg': [50.0]*n_depth, 
-            'cahpo4_mineral_g_mg': [0.0]*n_depth,
-            'apatite_mineral_g_mg': [0.0]*n_depth, 
-            'aloh3_mineral_g_mg': [1000.0]*n_depth,
-            'feoh3_mineral_g_mg': [1000.0]*n_depth, 
-            'caso4_mineral_g_mg': [0.0]*n_depth,
-            'caco3_mineral_g_mg': [0.0]*n_depth, 
-            'gapon_ca_nh4': [1.0]*n_depth,
-            'gapon_ca_h': [0.25]*n_depth, 
-            'gapon_ca_al': [0.25]*n_depth,
-            'gapon_ca_mg': [0.6]*n_depth, 
-            'gapon_ca_na': [0.16]*n_depth,
-            'gapon_ca_k': [3.0]*n_depth,
+            'soluble_exch_nh4_g_mg': [-1]*n_depth,
+            'soluble_exch_no3_g_mg': [-1]*n_depth,
+            'soluble_exch_h2po4_g_mg': [-1]*n_depth,
+            'soluble_al_g_mg': [-1]*n_depth,  
+            'soluble_fe_g_mg': [-1]*n_depth, 
+            'soluble_ca_g_mg': [-1]*n_depth, 
+            'soluble_mg_g_mg': [-1]*n_depth, 
+            'soluble_na_g_mg': [-1]*n_depth,
+            'soluble_k_g_mg': [-1]*n_depth, 
+            'soluble_so4s_g_mg': [-1]*n_depth,
+            'soluble_cl_g_mg': [-1]*n_depth, 
+            'alpo4_mineral_g_mg': [-1]*n_depth,
+            'fepo4_mineral_g_mg': [-1]*n_depth, 
+            'cahpo4_mineral_g_mg': [-1]*n_depth,
+            'apatite_mineral_g_mg': [-1]*n_depth, 
+            'aloh3_mineral_g_mg': [-1]*n_depth,
+            'feoh3_mineral_g_mg': [-1]*n_depth, 
+            'caso4_mineral_g_mg': [-1]*n_depth,
+            'caco3_mineral_g_mg': [-1]*n_depth, 
+            'gapon_ca_nh4': [-1]*n_depth,
+            'gapon_ca_h': [-1]*n_depth, 
+            'gapon_ca_al': [-1]*n_depth,
+            'gapon_ca_mg': [-1]*n_depth, 
+            'gapon_ca_na': [-1]*n_depth,
+            'gapon_ca_k': [-1]*n_depth,
             'initial_water_contents': [1.0]*n_depth, 
-            'initial_ice_contents': [0.0]*n_depth,
-            'initial_c_fine_litter': [45.0, 60.0, 75.0, 75.0, 60.0, 60.0, 45.0, 45.0, 15.0, 15.0, 15.0, 15.0],
-            'initial_n_fine_litter': [1.5, 2.0, 2.5, 2.5, 2.0, 2.0, 1.5, 1.5, 0.5, 0.5, 0.5, 0.5],
-            'initial_p_fine_litter': [0.15, 0.2, 0.25, 0.25, 0.2, 0.2, 0.15, 0.15, 0.05, 0.05, 0.05, 0.05],
-            'initial_c_woody_litter': [0.0]*n_depth, 
-            'initial_n_woody_litter': [0.0]*n_depth,
-            'initial_p_woody_litter': [0.0]*n_depth, 
-            'initial_c_manure_litter': [0.0]*n_depth,
-            'initial_n_manure_litter': [0.0]*n_depth, 
+            'initial_ice_contents': [0]*n_depth,
+            'initial_c_fine_litter': [0]*n_depth,
+            'initial_n_fine_litter': [0]*n_depth,
+            'initial_p_fine_litter': [0]*n_depth,
+            'initial_c_woody_litter': [-1]*n_depth, 
+            'initial_n_woody_litter': [-1]*n_depth,
+            'initial_p_woody_litter': [-1]*n_depth, 
+            'initial_c_manure_litter': [-1]*n_depth,
+            'initial_n_manure_litter': [-1]*n_depth, 
             'initial_p_manure_litter': [0.0]*n_depth
         }
     }
@@ -172,22 +172,22 @@ if __name__ == '__main__':
     # 1.5 Crop/PFT Configs
     grass_config = {
         "CROP_PARAMETERS": {
-            'biology_and_phenology': [3, 1, 1, 0, 0, 1, 2, 0, 0, 2, 1.50],
+            'biology_and_phenology': [3, 1, 1, 0, 0, 1, 2, 0, 0, 2, 1.0],
             'photosynthesis_biochem': [45.0, 9.5, 0.0, 12.5, 500.0, 0.0, 0.125, 0.0, 405.0, 0.025, 0.0, 0.70],
             'leaf_optical_props': [0.150, 0.075, 0.150, 0.075],
-            'development_and_temp': [0.015, 0.009, -10.0, 420.0, 720.0, 5.0, 0.10],
-            'flowering_and_photoperiod': [6.5, 2.5, -1.0, 0.5],
+            'development_and_temp': [0.015, 0.009, -20.0, 48.0, 1200.0, 5.0, 0.10],
+            'flowering_and_photoperiod': [5.0, 2.5, -1.0, 0.5],
             'organ_growth': [0.00333, 0.125, 0.15],
-            'canopy_structure': [0.00, 0.00, 0.50, 0.50, 0.90, 90.0, 90.0],
-            'seed_and_establishment': [5.0, 5.0, 0.005, 0.005, 1.25E-05, 0.0],
-            'root_properties': [1.0E-04, 1.0E-04, 0.05, 0.10, 1.0E+04, 4.0E+09, 5.0E-02, 250.0, 250.0],
+            'canopy_structure': [0.00, 0.00, 0.50, 0.50, 0.95, 90.0, 90.0],
+            'seed_and_establishment': [5.0, 5.0, 0.005, 0.005, 1.3E-05, 0.0],
+            'root_properties': [1.0E-04, 1.0E-04, 0.05, 0.10, 1.0E+04, 4.0E+09, 0.01, 250.0],
             'nh4_uptake_kinetics': [5.0E-03, 0.40, 0.0125], 
             'no3_uptake_kinetics': [5.0E-03, 0.35, 0.030],
             'h2po4_uptake_kinetics': [1.0E-03, 0.075, 0.002], 
             'water_relations': [-1.25, -5.0, 2.5E+03],
             'organ_growth_yield': [7.2E-01, 7.6E-01, 8.0E-01, 8.8E-01, 7.6E-01, 7.6E-01, 8.8E-01, 7.6E-01, 7.2E-01],
-            'organ_nc_ratio': [10.0E-02, 2.0E-02, 1.0E-02, 2.0E-02, 2.0E-02, 2.0E-02, 4.0E-02, 2.5E-02, 10.0E-02],
-            'organ_pc_ratio': [10.0E-03, 2.0E-03, 1.0E-03, 2.0E-03, 2.0E-03, 2.0E-03, 4.0E-03, 2.5E-03, 10.0E-03]
+            'organ_nc_ratio': [10.0E-02, 2.0E-02, 1.0E-02, 2.0E-02, 2.0E-02, 2.0E-02, 4.0E-02, 2.0E-02, 10.0E-02],
+            'organ_pc_ratio': [10.0E-03, 2.0E-03, 1.0E-03, 2.0E-03, 2.0E-03, 2.0E-03, 4.0E-03, 2.0E-03, 10.0E-03]
         }
     }
 
@@ -195,8 +195,8 @@ if __name__ == '__main__':
     grassp_config = {
         "planting": {
             "date_ddmmyyyy": "15039999",
-            "initial_density_m2": 1000,
-            "seeding_depth_m": 0.1
+            "initial_density_m2": 2000,
+            "seeding_depth_m": 0.01
         },
         "harvesting_events": []
     }
@@ -250,7 +250,7 @@ if __name__ == '__main__':
 
     # 2.1 生成 Runscript
     io_handler.write_runscript_from_config(
-        my_config, os.path.join(proj_path, "runscript_generated.txt"))
+        my_config, os.path.join(proj_path, "runscript_BR.txt"))
 
     # 2.2 生成 Site, Topography, and Soil data
     io_handler.write_sitedata_from_config(
@@ -273,7 +273,7 @@ if __name__ == '__main__':
         pft_arctic_g_config, os.path.join(proj_path, "pft_arctic_g"))
 
     # 2.5 循环生成多个天气选项文件
-    for year in range(1800, 1811):
+    for year in range(1970, 1990):
         opt_config = opt_base_config.copy()
         opt_config['WEATHER_OPTIONS']['scenario_start_date'] = f"0101{year}"
         opt_config['WEATHER_OPTIONS']['scenario_end_date'] = f"3112{year}"
