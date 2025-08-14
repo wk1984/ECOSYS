@@ -1,5 +1,74 @@
 import collections.abc
 
+import os
+import pandas as pd
+
+class simple_collections:
+    
+    def merge_mult_files(self, year_list, prefix = '01010', subfix='tsl', workdir='.'):
+        for i,yr in enumerate(year_list):
+            df1 = self.read_data_file_robust(os.path.join(workdir, prefix+str(yr)+subfix))
+            if i==0:
+                out = df1.copy()
+            else:
+                out = pd.concat([out, df1], ignore_index=True)
+    
+        return out
+    
+    def read_data_file_robust(self, file_content, header_lines = 1, nanflag = -9999.0):
+
+
+        
+        """
+        一个更强大的函数，用于读取具有多行标题的固定宽度文件。
+        该函数会自动解析标题，读取数据，并将'DATE'列转换为日期时间对象。
+
+        参数:
+        file_content (str): 文件的文本内容。
+        header_lines (int): 构成标题的总行数。
+
+        返回:
+        pandas.DataFrame: 包含正确列名和格式化日期列的DataFrame。
+        """
+
+        # --- 步骤 1: 读取并解析标题 ---
+
+        fid = open(file_content)
+        lines = fid.readline()
+        # print(lines)
+        fid.close()
+        column_headlines = lines.split()
+        
+        # 从数据开始的第一行读取，跳过所有标题行
+        df = pd.read_csv(file_content, 
+                         delim_whitespace=True, 
+                         skiprows=header_lines, 
+                         header=None, na_values = nanflag)
+        
+        # 获取实际读取到的数据列数
+        num_data_columns = df.shape[1]
+        
+        # 为 DataFrame 分配列名
+        num_headlines = len(column_headlines)
+        if num_headlines == num_data_columns:
+            df.columns = column_headlines
+        else:
+            # 如果列名和数据列数不匹配，则只命名匹配的部分，避免错误
+            df.columns = column_headlines[:num_data_columns]
+
+        # --- 新增步骤: 转换 DATE 列 ---
+        
+        # 检查 'DATE' 列是否存在
+        if 'DATE' in df.columns:
+            # 确保该列是字符串类型，以便进行处理
+            df['DATE'] = df['DATE'].astype(str)
+            # 补全可能缺失的前导零 (例如，日期为 1011801 而不是 01011801)
+            df['DATE'] = df['DATE'].str.zfill(8)
+            # 将字符串转换为日期时间对象，格式为 DDMMYYYY
+            df['DATE'] = pd.to_datetime(df['DATE'], format='%d%m%Y')
+                
+        return df
+
 
 class EcosysIO:
     """
