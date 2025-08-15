@@ -48,12 +48,12 @@ if __name__ == '__main__':
             "land_management_files": 'NO',
             "plant_management_files": plant_management_files,
             "soil_output_1": 'NO',
-            "atmospheric_output": 'NO',
+            "atmospheric_output": 'atm',
             "n_flux_output": 'NO',
             "p_flux_output": 'NO',
             "soil_output_2": 'tsl',
             "soil_output_3": 'eco',
-            "water_props_output": 'wat',
+            "water_props_output": 'NO',
             "n_props_output": 'NO',
             "p_props_output": 'NO',
             "t_props_output": 'NO'
@@ -70,15 +70,19 @@ if __name__ == '__main__':
             "bc_subsurface_flow_nesw": [0.0, 0.0, 0.0, 0.0],
             "dist_water_table_nesw": [0.0, 0.0, 0.0, 0.0],
             "lower_bc_water_flow": 0.0,
-            "width_we_column": 1.0, "width_ns_row": 1.0
+            "width_we_column": 1.0, 
+            "width_ns_row": 1.0
         }
     }
 
     # 1.3 Topography Data 配置
     my_topo_config = {
         "TOPOGRAPHY_PARAMETERS": {
-            "inner_grid_structure": [1, 1, 1, 1], "landscape_aspect_deg": 0.0,
-            "slope_ew_deg": 0.0, "slope_ns_deg": 0.0, "placeholder_value": 0.0,
+            "inner_grid_structure": [1, 1, 1, 1], 
+            "landscape_aspect_deg": 0.0,
+            "slope_ew_deg": 0.0, 
+            "slope_ns_deg": 0.0, 
+            "placeholder_value": 0.0,
             "soil_data_file": "soil_BR.txt"
         }
     }
@@ -125,47 +129,47 @@ if __name__ == '__main__':
             'rock_fraction': [0]*n_depth,
             'ph': [5.55, 5.55, 5.55, 5.25, 5.25, 5.16, 5.16, 5.16, 5.16, 5.16, 5.16, 5.06, 5.06, 5.06, 5.16, 5.16, 5.16, 5.06, 5.06, 5.06],
             'cation_exchange_capacity': [28.1, 28.1, 28.1, 28.1, 28.1, 28.1, 28.1, 29.9, 20.1, 19.7, 19.7, 19.7, 19.7, 19.7, 20.1, 19.7, 19.7, 19.7, 19.7, 19.7],
-            'anion_exchange_capacity': [0.0]*n_depth,
+            'anion_exchange_capacity': [0]*n_depth,
             'total_soc_kg_mg': [448.0, 448.0, 395.0, 342.0, 343.0, 203.0, 135.0, 124.0, 121.0, 129.0, 123.0, 166.0, 166.0, 166.0, 121.0, 129.0, 123.0, 166.0, 166.0, 166.0],
             'poc_kg_mg': [17.9, 17.9, 15.8, 15.2, 15.2, 10.1, 7.7, 8.3, 8.1, 8.6, 8.2, 11.1, 11.1, 11.1, 8.1, 8.6, 8.2, 11.1, 11.1, 11.1], 
             'son_g_mg': [-1.0]*n_depth, 
             'sop_g_mg': [-1.0]*n_depth,
-            'soluble_exch_nh4_g_mg': [-1]*n_depth,
-            'soluble_exch_no3_g_mg': [-1]*n_depth,
-            'soluble_exch_h2po4_g_mg': [-1]*n_depth,
-            'soluble_al_g_mg': [-1]*n_depth,  
-            'soluble_fe_g_mg': [-1]*n_depth, 
-            'soluble_ca_g_mg': [-1]*n_depth, 
-            'soluble_mg_g_mg': [-1]*n_depth, 
-            'soluble_na_g_mg': [-1]*n_depth,
-            'soluble_k_g_mg': [-1]*n_depth, 
-            'soluble_so4s_g_mg': [-1]*n_depth,
-            'soluble_cl_g_mg': [-1]*n_depth, 
-            'alpo4_mineral_g_mg': [-1]*n_depth,
-            'fepo4_mineral_g_mg': [-1]*n_depth, 
-            'cahpo4_mineral_g_mg': [-1]*n_depth,
-            'apatite_mineral_g_mg': [-1]*n_depth, 
-            'aloh3_mineral_g_mg': [-1]*n_depth,
-            'feoh3_mineral_g_mg': [-1]*n_depth, 
-            'caso4_mineral_g_mg': [-1]*n_depth,
-            'caco3_mineral_g_mg': [-1]*n_depth, 
-            'gapon_ca_nh4': [-1]*n_depth,
-            'gapon_ca_h': [-1]*n_depth, 
-            'gapon_ca_al': [-1]*n_depth,
-            'gapon_ca_mg': [-1]*n_depth, 
-            'gapon_ca_na': [-1]*n_depth,
-            'gapon_ca_k': [-1]*n_depth,
+            'soluble_exch_nh4_g_mg': [0]*n_depth,
+            'soluble_exch_no3_g_mg': [0]*n_depth,
+            'soluble_exch_h2po4_g_mg': [0]*n_depth,
+            'soluble_al_g_mg': [0]*n_depth,  
+            'soluble_fe_g_mg': [0]*n_depth, 
+            'soluble_ca_g_mg': [0]*n_depth, 
+            'soluble_mg_g_mg': [0]*n_depth, 
+            'soluble_na_g_mg': [0]*n_depth,
+            'soluble_k_g_mg': [0]*n_depth, 
+            'soluble_so4s_g_mg': [0]*n_depth,
+            'soluble_cl_g_mg': [0]*n_depth, 
+            'alpo4_mineral_g_mg': [0]*n_depth,
+            'fepo4_mineral_g_mg': [0]*n_depth, 
+            'cahpo4_mineral_g_mg': [0]*n_depth,
+            'apatite_mineral_g_mg': [0]*n_depth, 
+            'aloh3_mineral_g_mg': [0]*n_depth,
+            'feoh3_mineral_g_mg': [0]*n_depth, 
+            'caso4_mineral_g_mg': [0]*n_depth,
+            'caco3_mineral_g_mg': [0]*n_depth, 
+            'gapon_ca_nh4': [1]*n_depth,
+            'gapon_ca_h': [1]*n_depth, 
+            'gapon_ca_al': [1]*n_depth,
+            'gapon_ca_mg': [1]*n_depth, 
+            'gapon_ca_na': [1]*n_depth,
+            'gapon_ca_k': [1]*n_depth,
             'initial_water_contents': [1.0]*n_depth, 
             'initial_ice_contents': [0]*n_depth,
             'initial_c_fine_litter': [0]*n_depth,
             'initial_n_fine_litter': [0]*n_depth,
             'initial_p_fine_litter': [0]*n_depth,
-            'initial_c_woody_litter': [-1]*n_depth, 
-            'initial_n_woody_litter': [-1]*n_depth,
-            'initial_p_woody_litter': [-1]*n_depth, 
-            'initial_c_manure_litter': [-1]*n_depth,
-            'initial_n_manure_litter': [-1]*n_depth, 
-            'initial_p_manure_litter': [0.0]*n_depth
+            'initial_c_woody_litter': [0]*n_depth, 
+            'initial_n_woody_litter': [0]*n_depth,
+            'initial_p_woody_litter': [0]*n_depth, 
+            'initial_c_manure_litter': [0]*n_depth,
+            'initial_n_manure_litter': [0]*n_depth, 
+            'initial_p_manure_litter': [0]*n_depth
         }
     }
 
@@ -195,8 +199,8 @@ if __name__ == '__main__':
     grassp_config = {
         "planting": {
             "date_ddmmyyyy": "15039999",
-            "initial_density_m2": 2000,
-            "seeding_depth_m": 0.01
+            "initial_density_m2": 800,
+            "seeding_depth_m": 0.05
         },
         "harvesting_events": []
     }
@@ -204,11 +208,15 @@ if __name__ == '__main__':
     # 1.6 Plant Management Config
     pft_arctic_p_config = {
         "grid_cell": "1 1 1 1",
-        "pft_definitions": [{"crop_file": "gras61", "planting_file": "grassp"}]
+        "pft_definitions": [{"crop_file": "sedg61", "planting_file": "sedgp"},
+                            {"crop_file": "moss61", "planting_file": "mossp"}
+                            ]
     }
     pft_arctic_g_config = {
         "grid_cell": "1 1 1 1",
-        "pft_definitions": [{"crop_file": "gras61", "planting_file": "NO"}]
+        "pft_definitions": [{"crop_file": "sedg61", "planting_file": "NO"},
+                            {"crop_file": "moss61", "planting_file": "NO"}
+                            ]
     }
 
     # 1.7 Weather Options Config
@@ -221,7 +229,7 @@ if __name__ == '__main__':
             'annual_change_params_2': [0.0]*10,
             'annual_change_params_3': [0.0]*10, 
             'annual_change_params_4': [0.0]*10,
-            'calc_and_output_freq': [24, 24, 24, -1, -1, 0]
+            'calc_and_output_freq': [24, 24, 24, 1, 24, 0]
             #     NPX=number of cycles per hour for water,heat,solute flux calcns
             #     NPY=number of cycles per NPX for gas flux calcns
             #     JOUT,IOUT,KOUT=output frequency for hourly,daily,checkpoint data
@@ -261,10 +269,14 @@ if __name__ == '__main__':
         my_soil_config, os.path.join(proj_path, "soil_BR.txt"))
 
     # 2.3 生成植被参数文件
-    io_handler.write_crop_params_from_config(
-        grass_config, os.path.join(proj_path, "gras61"))
+    # io_handler.write_crop_params_from_config(
+    #     grass_config, os.path.join(proj_path, "gras61"))
     io_handler.write_planting_data_from_config(
-        grassp_config, os.path.join(proj_path, "grassp"))
+        grassp_config, os.path.join(proj_path, "sedgp"))
+    grassp_config["planting"].update({"initial_density_m2": 1E4,
+                                      "seeding_depth_m": 0.01})
+    io_handler.write_planting_data_from_config(
+        grassp_config, os.path.join(proj_path, "mossp"))
 
     # 2.4 生成植被管理文件
     io_handler.write_plant_management_file(
@@ -273,7 +285,7 @@ if __name__ == '__main__':
         pft_arctic_g_config, os.path.join(proj_path, "pft_arctic_g"))
 
     # 2.5 循环生成多个天气选项文件
-    for year in range(1970, 1990):
+    for year in range(1970, 1980):
         opt_config = opt_base_config.copy()
         opt_config['WEATHER_OPTIONS']['scenario_start_date'] = f"0101{year}"
         opt_config['WEATHER_OPTIONS']['scenario_end_date'] = f"3112{year}"
@@ -300,7 +312,7 @@ if __name__ == '__main__':
         fid.write('YES\n' * 10)
     print("文件已成功生成在: eco")
 
-    with open(os.path.join(proj_path, 'wat'), 'wt') as fid:
+    with open(os.path.join(proj_path, 'atm'), 'wt') as fid:
         fid.write('0101\n3112\n')
         fid.write('YES\n' * 50)
-    print("文件已成功生成在: wat")
+    print("文件已成功生成在: atm")
