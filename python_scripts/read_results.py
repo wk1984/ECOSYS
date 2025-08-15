@@ -27,7 +27,7 @@ workdir = './daily/outputs'
 
 Depth = [0.01,0.055,0.1,0.11,0.155,0.2,0.21,0.255,0.3,0.31,0.355,0.4,0.45,0.5,0.55,0.6,0.7,0.9,1.1,1.3]
 
-year_list = range(1980, 1982)
+year_list = range(1970, 1973)
 
 # year_list = np.arange(1981, 1986)
 # year_list = np.arange(1991, 1996)
@@ -56,11 +56,11 @@ df_tsl[['TEMP_3','TEMP_5']].plot()
 plt.show()
 
 # %%
-df_wat = our_func.merge_mult_files(year_list, subfix = 'wat', workdir=workdir)
+df_wat = our_func.merge_mult_files(year_list, subfix = 'atm', workdir=workdir)
 
 df_wat = df_wat.set_index('DATE')
 
-(df_wat['SNOWPACK']*0.001).plot()
+(df_wat['SNOWPACK']*0.01).plot()
 plt.ylabel('Snow Depth (m)')
 # (df_wat['ACTV_LYR']).plot()
 
@@ -82,7 +82,9 @@ plt.gcf().autofmt_xdate()
 plt.colorbar(c0, extend = 'both')
 
 # %%
-# dump1[['TEMP_3','TEMP_5']].plot()
+# df_tsl['SOIL_RN'].plot()
+df_tsl.columns#[['TEMP_3','TEMP_5']].plot()
+
 
 # %%
 
