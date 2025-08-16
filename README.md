@@ -23,7 +23,7 @@ You can also make a fork using the fork button on the upper right corner.
 
 * Configure for building
 
-make config CC=icc CXX=icpc FC=ifort
+make config CC=icc CXX=icpc FC=ifort FFLAGS=-O3
 
 * If using gnu compilers, type
 
