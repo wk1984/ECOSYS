@@ -27,7 +27,7 @@ make config CC=icc CXX=icpc FC=ifort
 
 * If using gnu compilers, type
 
-make config CC=gcc CXX=g++ FC=gfortran
+make config CC=gcc CXX=g++ FC=gfortran FFLAGS=-ffpe-summary='none'
 
 * Obtain the executable
 
