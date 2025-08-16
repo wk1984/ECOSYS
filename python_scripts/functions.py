@@ -124,6 +124,16 @@ class simple_collections:
         full_config = self.cdl_to_pft_dict(cdl_content, pft_name_to_extract)
             
         return full_config
+
+    def merge_mult_files(self, year_list, prefix = '01010', subfix='tsl', workdir='.'):
+        for i,yr in enumerate(year_list):
+            df1 = self.read_data_file_robust(os.path.join(workdir, prefix+str(yr)+subfix))
+            if i==0:
+                out = df1.copy()
+            else:
+                out = pd.concat([out, df1], ignore_index=True)
+    
+        return out
     
     def read_data_file_robust(self, file_content, header_lines = 1, nanflag = -9999.0):
 
