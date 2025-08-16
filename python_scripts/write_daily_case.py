@@ -231,7 +231,7 @@ if __name__ == '__main__':
             'annual_change_params_2': [0.0]*10,
             'annual_change_params_3': [0.0]*10, 
             'annual_change_params_4': [0.0]*10,
-            'calc_and_output_freq': [24, 24, 24, 1, 24, 0]
+            'calc_and_output_freq': [24, 3, 24, 1, 24, 0]
             #     NPX=number of cycles per hour for water,heat,solute flux calcns
             #     NPY=number of cycles per NPX for gas flux calcns
             #     JOUT,IOUT,KOUT=output frequency for hourly,daily,checkpoint data
