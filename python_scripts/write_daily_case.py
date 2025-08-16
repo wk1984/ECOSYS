@@ -40,7 +40,7 @@ if __name__ == '__main__':
             "grid_dims": [1, 1, 1, 1, 1],
             "site_data_file": "site_BR.txt",
             "topography_data_file": "topo_BR.txt",
-            "num_scenes": 3,
+            "num_scenes": 10,
             "num_runs": 1
         },
         "SETUP_SCENES": {
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     my_site_config = {
         "SITE_PARAMETERS": {
             "latitude": 71.28, "altitude": 10.0, "mean_temp_c": -8, "water_table_flag": 1.0,
-            "atm_composition_ppm": [210000.0, 780000.0, 282.9, 1.8, 0.3, 0.005],
+            "atm_composition_ppm": [210000.0, 780000.0, 345.0, 1.8, 0.3, 0.005],
             "climate_grid_hydro_params": [61, 0, -1, 1, 100, 100.0, 0.0],
             "bc_surface_runoff_nesw": [0.0, 0.0, 0.0, 0.0],
             "bc_subsurface_flow_nesw": [0.0, 0.0, 0.0, 0.0],
@@ -91,6 +91,7 @@ if __name__ == '__main__':
     # 1.4 Soil Data 配置
     
     depth_list = [0.01, 0.055, 0.1, 0.11, 0.155, 0.2, 0.21, 0.255, 0.3, 0.31, 0.355, 0.4, 0.45, 0.5, 0.55, 0.6, 0.7, 0.9, 1.1, 1.3]
+    # depth_list = [0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.4,0.5,0.6,0.7,0.8,1.0,1.2,1.5,2.0,2.5,3.0,3.5,4.0]
     n_depth = len(depth_list)
     
     my_soil_config = {
@@ -124,34 +125,34 @@ if __name__ == '__main__':
             'wilting_point_m3_m3': [0.16, 0.16, 0.16, 0.13, 0.13, 0.13, 0.14, 0.14, 0.14, 0.14, 0.08, 0.11, 0.11, 0.11, 0.14, 0.14, 0.08, 0.11, 0.11, 0.11],
             'vertical_ksat_mm_h': [16.0, 16.0, 16.0, 4.5, 4.5, 4.5, 22.6, 22.6, 22.6, 22.6, 22.6, 545.0, 545.0, 545.0, 22.6, 545.0, 545.0, 545.0, 545.0, 545.0], 
             'lateral_ksat_mm_h': [-1.0]*n_depth,
-            'sand_contents_kg_mg': [318, 318, 318, 318, 318, 517, 517, 382, 382, 68, 68, 517, 517, 517, 382, 68, 68, 517, 517, 517],
-            'silt_contents_kg_mg': [410, 410, 410, 410, 410, 311, 311, 335, 335, 462, 462, 361, 361, 361, 335, 462, 462, 361, 361, 361],
+            'sand_contents_kg_mg': [410, 410, 410, 410, 410, 311, 311, 335, 335, 462, 462, 361, 361, 361, 335, 462, 462, 361, 361, 361],
+            'silt_contents_kg_mg': [318, 318, 318, 318, 318, 517, 517, 382, 382, 68, 68, 517, 517, 517, 382, 68, 68, 517, 517, 517], 
             'macropore': [0]*n_depth, 
             'rock_fraction': [0]*n_depth,
             'ph': [5.55, 5.55, 5.55, 5.25, 5.25, 5.16, 5.16, 5.16, 5.16, 5.16, 5.16, 5.06, 5.06, 5.06, 5.16, 5.16, 5.16, 5.06, 5.06, 5.06],
             'cation_exchange_capacity': [28.1, 28.1, 28.1, 28.1, 28.1, 28.1, 28.1, 29.9, 20.1, 19.7, 19.7, 19.7, 19.7, 19.7, 20.1, 19.7, 19.7, 19.7, 19.7, 19.7],
-            'anion_exchange_capacity': [0]*n_depth,
+            'anion_exchange_capacity': [3]*n_depth,
             'total_soc_kg_mg': [448.0, 448.0, 395.0, 342.0, 343.0, 203.0, 135.0, 124.0, 121.0, 129.0, 123.0, 166.0, 166.0, 166.0, 121.0, 129.0, 123.0, 166.0, 166.0, 166.0],
-            'poc_kg_mg': [17.9, 17.9, 15.8, 15.2, 15.2, 10.1, 7.7, 8.3, 8.1, 8.6, 8.2, 11.1, 11.1, 11.1, 8.1, 8.6, 8.2, 11.1, 11.1, 11.1], 
-            'son_g_mg': [-1.0]*n_depth, 
+            'poc_kg_mg': [0.0]*n_depth, 
+            'son_g_mg': [17.9, 17.9, 15.8, 15.2, 15.2, 10.1, 7.7, 8.3, 8.1, 8.6, 8.2, 11.1, 11.1, 11.1, 8.1, 8.6, 8.2, 11.1, 11.1, 11.1], 
             'sop_g_mg': [-1.0]*n_depth,
-            'soluble_exch_nh4_g_mg': [0]*n_depth,
-            'soluble_exch_no3_g_mg': [0]*n_depth,
-            'soluble_exch_h2po4_g_mg': [0]*n_depth,
-            'soluble_al_g_mg': [0]*n_depth,  
-            'soluble_fe_g_mg': [0]*n_depth, 
-            'soluble_ca_g_mg': [0]*n_depth, 
+            'soluble_exch_nh4_g_mg': [3]*n_depth,
+            'soluble_exch_no3_g_mg': [12]*n_depth,
+            'soluble_exch_h2po4_g_mg': [10]*n_depth,
+            'soluble_al_g_mg': [-1]*n_depth,  
+            'soluble_fe_g_mg': [-1]*n_depth, 
+            'soluble_ca_g_mg': [40]*n_depth, 
             'soluble_mg_g_mg': [0]*n_depth, 
-            'soluble_na_g_mg': [0]*n_depth,
+            'soluble_na_g_mg': [0.07]*n_depth,
             'soluble_k_g_mg': [0]*n_depth, 
-            'soluble_so4s_g_mg': [0]*n_depth,
-            'soluble_cl_g_mg': [0]*n_depth, 
-            'alpo4_mineral_g_mg': [0]*n_depth,
-            'fepo4_mineral_g_mg': [0]*n_depth, 
+            'soluble_so4s_g_mg': [50]*n_depth,
+            'soluble_cl_g_mg': [50]*n_depth, 
+            'alpo4_mineral_g_mg': [50]*n_depth,
+            'fepo4_mineral_g_mg': [50]*n_depth, 
             'cahpo4_mineral_g_mg': [0]*n_depth,
             'apatite_mineral_g_mg': [0]*n_depth, 
-            'aloh3_mineral_g_mg': [0]*n_depth,
-            'feoh3_mineral_g_mg': [0]*n_depth, 
+            'aloh3_mineral_g_mg': [1000]*n_depth,
+            'feoh3_mineral_g_mg': [1000]*n_depth, 
             'caso4_mineral_g_mg': [0]*n_depth,
             'caco3_mineral_g_mg': [0]*n_depth, 
             'gapon_ca_nh4': [1]*n_depth,
@@ -211,13 +212,13 @@ if __name__ == '__main__':
     pft_arctic_p_config = {
         "grid_cell": "1 1 1 1",
         "pft_definitions": [{"crop_file": "sedg61", "planting_file": "sedgp"},
-                            {"crop_file": "moss61", "planting_file": "mossp"}
+                            # {"crop_file": "moss61", "planting_file": "mossp"}
                             ]
     }
     pft_arctic_g_config = {
         "grid_cell": "1 1 1 1",
         "pft_definitions": [{"crop_file": "sedg61", "planting_file": "NO"},
-                            {"crop_file": "moss61", "planting_file": "NO"}
+                            # {"crop_file": "moss61", "planting_file": "NO"}
                             ]
     }
 
@@ -231,7 +232,7 @@ if __name__ == '__main__':
             'annual_change_params_2': [0.0]*10,
             'annual_change_params_3': [0.0]*10, 
             'annual_change_params_4': [0.0]*10,
-            'calc_and_output_freq': [24, 3, 24, 1, 24, 0]
+            'calc_and_output_freq': [24, 10, 24, 1, 24, 0]
             #     NPX=number of cycles per hour for water,heat,solute flux calcns
             #     NPY=number of cycles per NPX for gas flux calcns
             #     JOUT,IOUT,KOUT=output frequency for hourly,daily,checkpoint data
