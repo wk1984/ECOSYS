@@ -1,19 +1,129 @@
 import collections.abc
 
+import re
 import os
 import pandas as pd
 
 class simple_collections:
     
-    def merge_mult_files(self, year_list, prefix = '01010', subfix='tsl', workdir='.'):
-        for i,yr in enumerate(year_list):
-            df1 = self.read_data_file_robust(os.path.join(workdir, prefix+str(yr)+subfix))
-            if i==0:
-                out = df1.copy()
-            else:
-                out = pd.concat([out, df1], ignore_index=True)
+    def cdl_to_pft_dict(self, cdl_content: str, pft_name_to_extract: str) -> dict:
+        """
+        解析 CDL 字符串内容，并为指定的 PFT 提取参数，汇总到一个格式化的字典中。
+        (此函数与之前版本相同)
+        """
+        try:
+            data_section = cdl_content.split('data:')[1]
+            data_section = data_section.rsplit('}', 1)[0]
+        except IndexError:
+            return {}
     
-        return out
+        variable_pattern = re.compile(r'\b([a-zA-Z0-9_]+)\s*=\s*(.*?);', re.DOTALL)
+        
+        variables = {}
+        matches = variable_pattern.finditer(data_section)
+        for match in matches:
+            var_name = match.group(1).strip()
+            values_str = match.group(2).strip()
+            
+            if '"' in values_str:
+                variables[var_name] = [v.strip() for v in re.findall(r'"(.*?)"', values_str, re.DOTALL)]
+                continue
+    
+            cleaned_str = ' '.join(values_str.replace('\n', ' ').replace(',', ' ').split())
+            value_list = cleaned_str.split(' ')
+            
+            numeric_values = []
+            for val in value_list:
+                if val:
+                    try:
+                        numeric_values.append(float(val))
+                    except ValueError:
+                        pass
+            variables[var_name] = numeric_values
+                
+        pft_names = variables.get('pfts')
+        if not pft_names:
+            return {"error": "'pfts' 变量未在 CDL 数据中找到。"}
+            
+        try:
+            pft_index = pft_names.index(pft_name_to_extract)
+        except ValueError:
+            return {"error": f"PFT '{pft_name_to_extract}' 在 PFT 列表中未找到。"}
+    
+        param_map = {
+            'biology_and_phenology': ['ICTYP', 'IGTYP', 'ISTYP', 'IDTYP', 'INTYP', 'IWTYP', 'IPTYP', 'IBTYP', 'IRTYP', 'MY', 'ZTYPI'],
+            'photosynthesis_biochem': ['VCMX', 'VOMX', 'VCMX4', 'XKCO2', 'XKO2', 'XKCO24', 'RUBP', 'PEPC', 'ETMX', 'CHL', 'CHL4', 'FCO2'],
+            'leaf_optical_props': ['ALBR', 'ALBP', 'TAUR', 'TAUP'],
+            'development_and_temp': ['XRNI', 'XRLA', 'CTC', 'VRNLI', 'VRNXI', 'WDLF', 'PB'],
+            'flowering_and_photoperiod': ['GROUPX', 'XTLI', 'XDL', 'XPPD'],
+            'organ_growth': ['SLA1', 'SSL1', 'SNL1'],
+            'canopy_structure': ['CFI', 'ANGBR', 'ANGSH'],
+            'seed_and_establishment': ['STMX', 'SDMX', 'GRMX', 'GRDM', 'GFILL', 'WTSTDI'],
+            'root_properties': ['RRAD1M', 'RRAD2M', 'PORT', 'PR', 'RSRR', 'RSRA', 'PTSHT', 'RTFQ'],
+            'nh4_uptake_kinetics': ['UPMXZH', 'UPKMZH', 'UPMNZH'],
+            'no3_uptake_kinetics': ['UPMXZO', 'UPKMZO', 'UPMNZO'],
+            'h2po4_uptake_kinetics': ['UPMXPO', 'UPKMPO', 'UPMNPO'],
+            'water_relations': ['OSMO', 'RCS', 'RSMX'],
+            'organ_growth_yield': ['DMLF', 'DMSHE', 'DMSTK', 'DMRSV', 'DMHSK', 'DMEAR', 'DMGR', 'DMRT', 'DMND'],
+            'organ_nc_ratio': ['CNLF', 'CNSHE', 'CNSTK', 'CNRSV', 'CNHSK', 'CNEAR', 'CNGR', 'CNRT', 'CNND'],
+            'organ_pc_ratio': ['CPLF', 'CPSHE', 'CPSTK', 'CPRSV', 'CPHSK', 'CPEAR', 'CPGR', 'CPRT', 'CPND']
+        }
+        
+        pft_params = {}
+        for category, var_list in param_map.items():
+            pft_params[category] = []
+            for var_name in var_list:
+                if var_name in variables:
+                    if pft_index < len(variables[var_name]):
+                        value = variables[var_name][pft_index]
+                        if isinstance(value, float) and value.is_integer():
+                             pft_params[category].append(int(value))
+                        else:
+                             pft_params[category].append(value)
+    
+        if 'CLASS' in variables:
+            class_values = variables['CLASS']
+            jli_dim = 4
+            start_index = pft_index * jli_dim
+            end_index = start_index + jli_dim
+            if end_index <= len(class_values):
+                class_data_for_pft = [int(v) if float(v).is_integer() else v for v in class_values[start_index:end_index]]
+                pft_params['canopy_structure'] = class_data_for_pft + pft_params['canopy_structure']
+    
+        final_dict = {
+            pft_name_to_extract: {
+                "CROP_PARAMETERS": pft_params
+            }
+        }
+        return final_dict
+        
+    # --- 新增的主函数 ---
+    def process_cdl_file(self, cdl_filepath: str, pft_name_to_extract: str, output_dir: str = '.'):
+        """
+        从CDL文件读取数据，处理指定的PFT，并生成参数文件。
+    
+        Args:
+            cdl_filepath (str): 输入的CDL文件路径。
+            pft_name_to_extract (str): 需要提取参数的PFT名称。
+            output_dir (str, optional): 输出目录。默认为当前目录。
+        """
+        print(f"\n--- 开始处理 PFT: {pft_name_to_extract} ---")
+        # 1. 从文件读取CDL内容
+        try:
+            with open(cdl_filepath, 'r', encoding='utf-8') as f:
+                cdl_content = f.read()
+            print(f"成功读取文件: {cdl_filepath}")
+        except FileNotFoundError:
+            print(f"错误: 文件未找到于 '{cdl_filepath}'")
+            return
+        except Exception as e:
+            print(f"读取文件时发生错误: {e}")
+            return
+    
+        # 2. 调用解析函数生成配置字典
+        full_config = self.cdl_to_pft_dict(cdl_content, pft_name_to_extract)
+            
+        return full_config
     
     def read_data_file_robust(self, file_content, header_lines = 1, nanflag = -9999.0):
 
