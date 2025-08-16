@@ -1,4 +1,4 @@
-from functions import EcosysIO
+from functions import EcosysIO, simple_collections
 import os
 import numpy as np
 
@@ -27,6 +27,7 @@ if __name__ == '__main__':
 
     # 0. 实例化 IO 工具类
     io_handler = EcosysIO()
+    oth_handler = simple_collections()
 
     # 1. 定义所有配置字典
 
@@ -174,33 +175,34 @@ if __name__ == '__main__':
     }
 
     # 1.5 Crop/PFT Configs
-    grass_config = {
-        "CROP_PARAMETERS": {
-            'biology_and_phenology': [3, 1, 1, 0, 0, 1, 2, 0, 0, 2, 1.0],
-            'photosynthesis_biochem': [45.0, 9.5, 0.0, 12.5, 500.0, 0.0, 0.125, 0.0, 405.0, 0.025, 0.0, 0.70],
-            'leaf_optical_props': [0.150, 0.075, 0.150, 0.075],
-            'development_and_temp': [0.015, 0.009, -20.0, 48.0, 1200.0, 5.0, 0.10],
-            'flowering_and_photoperiod': [5.0, 2.5, -1.0, 0.5],
-            'organ_growth': [0.00333, 0.125, 0.15],
-            'canopy_structure': [0.00, 0.00, 0.50, 0.50, 0.95, 90.0, 90.0],
-            'seed_and_establishment': [5.0, 5.0, 0.005, 0.005, 1.3E-05, 0.0],
-            'root_properties': [1.0E-04, 1.0E-04, 0.05, 0.10, 1.0E+04, 4.0E+09, 0.01, 250.0],
-            'nh4_uptake_kinetics': [5.0E-03, 0.40, 0.0125], 
-            'no3_uptake_kinetics': [5.0E-03, 0.35, 0.030],
-            'h2po4_uptake_kinetics': [1.0E-03, 0.075, 0.002], 
-            'water_relations': [-1.25, -5.0, 2.5E+03],
-            'organ_growth_yield': [7.2E-01, 7.6E-01, 8.0E-01, 8.8E-01, 7.6E-01, 7.6E-01, 8.8E-01, 7.6E-01, 7.2E-01],
-            'organ_nc_ratio': [10.0E-02, 2.0E-02, 1.0E-02, 2.0E-02, 2.0E-02, 2.0E-02, 4.0E-02, 2.0E-02, 10.0E-02],
-            'organ_pc_ratio': [10.0E-03, 2.0E-03, 1.0E-03, 2.0E-03, 2.0E-03, 2.0E-03, 4.0E-03, 2.0E-03, 10.0E-03]
-        }
-    }
-
+    cdl_filepath = "ecosim_pft_20240314.nc.cdl" 
+    
+    PFTs = ['sedg61','moss61']
+        
+    for i, pft in enumerate(PFTs):
+        
+        dump0 = oth_handler.process_cdl_file(cdl_filepath, pft)
+                
+        if i==0:
+            full_pft_config = dump0
+        else:
+            full_pft_config[pft] = dump0[pft]
+    
     # 1.5 定义 grassp 文件的配置字典
-    grassp_config = {
+    sedg61p_config = {
         "planting": {
             "date_ddmmyyyy": "15039999",
             "initial_density_m2": 800,
             "seeding_depth_m": 0.05
+        },
+        "harvesting_events": []
+    }
+
+    moss61p_config = {
+        "planting": {
+            "date_ddmmyyyy": "15039999",
+            "initial_density_m2": 1E4,
+            "seeding_depth_m": 0.01
         },
         "harvesting_events": []
     }
@@ -271,12 +273,16 @@ if __name__ == '__main__':
     # 2.3 生成植被参数文件
     # io_handler.write_crop_params_from_config(
     #     grass_config, os.path.join(proj_path, "gras61"))
+    
+    for i, pft in enumerate(PFTs):
+        io_handler.write_crop_params_from_config(
+            full_pft_config[pft], os.path.join(proj_path, pft))
+    
     io_handler.write_planting_data_from_config(
-        grassp_config, os.path.join(proj_path, "sedgp"))
-    grassp_config["planting"].update({"initial_density_m2": 1E4,
-                                      "seeding_depth_m": 0.01})
+        sedg61p_config, os.path.join(proj_path, "sedgp"))
+    
     io_handler.write_planting_data_from_config(
-        grassp_config, os.path.join(proj_path, "mossp"))
+        moss61p_config, os.path.join(proj_path, "mossp"))
 
     # 2.4 生成植被管理文件
     io_handler.write_plant_management_file(
