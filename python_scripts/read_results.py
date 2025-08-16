@@ -26,8 +26,9 @@ test[7].sum()
 workdir = './daily/outputs'
 
 Depth = [0.01,0.055,0.1,0.11,0.155,0.2,0.21,0.255,0.3,0.31,0.355,0.4,0.45,0.5,0.55,0.6,0.7,0.9,1.1,1.3]
+# Depth = [0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.4,0.5,0.6,0.7,0.8,1.0,1.2,1.5,2.0,2.5,3.0,3.5,4.0]
 
-year_list = range(1970, 1973)
+year_list = range(1970, 1980)
 
 # year_list = np.arange(1981, 1986)
 # year_list = np.arange(1991, 1996)
@@ -52,7 +53,7 @@ df_tsl = df_tsl.set_index('DATE')
 
 # print(df_tsl.columns)
 
-df_tsl[['TEMP_3','TEMP_5']].plot()
+df_tsl[['TEMP_3','TEMP_5','TEMP_20']].plot()
 plt.show()
 
 # %%
@@ -77,14 +78,14 @@ dump1 = df_tsl[['TEMP_1', 'TEMP_2', 'TEMP_3', 'TEMP_4', 'TEMP_5', 'TEMP_6', 'TEM
 plt.figure(figsize=[12,4])
 c0 = plt.pcolor(df_tsl.index, Depth, dump1.T, cmap = 'coolwarm', vmin = -25, vmax = 25)
 plt.contour(df_tsl.index, Depth, dump1.T, levels = [0])
-plt.ylim([0.75,0])
+plt.ylim([1,0])
 plt.gcf().autofmt_xdate()
 plt.colorbar(c0, extend = 'both')
 
 # %%
 # df_tsl['SOIL_RN'].plot()
 df_tsl.columns#[['TEMP_3','TEMP_5']].plot()
-
+df_tsl[['TEMP_20']].resample('1A').mean().plot()
 
 # %%
 
