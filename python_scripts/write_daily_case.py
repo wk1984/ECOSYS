@@ -32,7 +32,8 @@ if __name__ == '__main__':
     # 1. 定义所有配置字典
 
     # 1.1 Runscript 配置
-    plant_management_files = ['pft_arctic_p'] * 1
+    plant_management_files = ['pft_arctic_p']
+    # plant_management_files.extend(['pft_arctic_p'])
     plant_management_files.extend(['pft_arctic_g']*19)
 
     my_config = {
@@ -64,9 +65,9 @@ if __name__ == '__main__':
     # 1.2 Site Data 配置
     my_site_config = {
         "SITE_PARAMETERS": {
-            "latitude": 71.28, "altitude": 10.0, "mean_temp_c": -8, "water_table_flag": 1.0,
+            "latitude": 71.28, "altitude": 10.0, "mean_temp_c": -8, "water_table_flag": 0.0,
             "atm_composition_ppm": [210000.0, 780000.0, 345.0, 1.8, 0.3, 0.005],
-            "climate_grid_hydro_params": [61, 0, -1, 1, 100, 100.0, 0.0],
+            "climate_grid_hydro_params": [61, 0, -1, 3, 5, 100.0, 0.0],
             "bc_surface_runoff_nesw": [0.0, 0.0, 0.0, 0.0],
             "bc_subsurface_flow_nesw": [0.0, 0.0, 0.0, 0.0],
             "dist_water_table_nesw": [0.0, 0.0, 0.0, 0.0],
@@ -193,7 +194,7 @@ if __name__ == '__main__':
     sedg61p_config = {
         "planting": {
             "date_ddmmyyyy": "15039999",
-            "initial_density_m2": 800,
+            "initial_density_m2": 200,
             "seeding_depth_m": 0.05
         },
         "harvesting_events": []
@@ -212,13 +213,13 @@ if __name__ == '__main__':
     pft_arctic_p_config = {
         "grid_cell": "1 1 1 1",
         "pft_definitions": [{"crop_file": "sedg61", "planting_file": "sedgp"},
-                            # {"crop_file": "moss61", "planting_file": "mossp"}
+                            {"crop_file": "moss61", "planting_file": "mossp"}
                             ]
     }
     pft_arctic_g_config = {
         "grid_cell": "1 1 1 1",
         "pft_definitions": [{"crop_file": "sedg61", "planting_file": "NO"},
-                            # {"crop_file": "moss61", "planting_file": "NO"}
+                            {"crop_file": "moss61", "planting_file": "NO"}
                             ]
     }
 
@@ -226,13 +227,13 @@ if __name__ == '__main__':
     opt_base_config = {
         "WEATHER_OPTIONS": {
             'generate_files_data': "NO", 
-            'generate_checkpoint': "NO", 
-            'resume_from_earlier': "NO",
+            'generate_checkpoint': "YES", 
+            'resume_from_earlier': "YES",
             'annual_change_params_1': [0.0]*10, 
             'annual_change_params_2': [0.0]*10,
             'annual_change_params_3': [0.0]*10, 
             'annual_change_params_4': [0.0]*10,
-            'calc_and_output_freq': [24, 10, 24, 1, 24, 0]
+            'calc_and_output_freq': [60, 60, 3, 1, -1, 0]
             #     NPX=number of cycles per hour for water,heat,solute flux calcns
             #     NPY=number of cycles per NPX for gas flux calcns
             #     JOUT,IOUT,KOUT=output frequency for hourly,daily,checkpoint data
@@ -296,7 +297,7 @@ if __name__ == '__main__':
         opt_config = opt_base_config.copy()
         opt_config['WEATHER_OPTIONS']['scenario_start_date'] = f"0101{year}"
         opt_config['WEATHER_OPTIONS']['scenario_end_date'] = f"3112{year}"
-        opt_config['WEATHER_OPTIONS']['run_start_date'] = f"0101{year}"
+        opt_config['WEATHER_OPTIONS']['run_start_date'] = f"01011980"
         io_handler.write_weather_options_from_config(
             opt_config, os.path.join(proj_path, f"opt{year}"))
 
