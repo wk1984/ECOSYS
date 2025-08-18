@@ -30,23 +30,25 @@ if __name__ == '__main__':
     oth_handler = simple_collections()
 
     # 1. 定义所有配置字典
+    
+    year_list = range(1980,2000)
 
     # 1.1 Runscript 配置
     plant_management_files = ['pft_arctic_p']
     # plant_management_files.extend(['pft_arctic_p'])
-    plant_management_files.extend(['pft_arctic_g']*19)
+    plant_management_files.extend(['pft_arctic_g']*(len(year_list)-1))
 
     my_config = {
         "SETUP_GENERAL": {
             "grid_dims": [1, 1, 1, 1, 1],
             "site_data_file": "site_BR.txt",
             "topography_data_file": "topo_BR.txt",
-            "num_scenes": 5,
+            "num_scenes": len(year_list),
             "num_runs": 1
         },
         "SETUP_SCENES": {
-            "weather_data_files": ['era5l_' + str(i) for i in range(1980, 1990)],
-            "weather_options_files": ['opt' + str(i) for i in range(1980, 1990)],
+            "weather_data_files": ['era5l_' + str(i) for i in year_list],
+            "weather_options_files": ['opt' + str(i) for i in year_list],
             "land_management_files": 'NO',
             "plant_management_files": plant_management_files,
             "soil_output_1": 'NO',
@@ -233,7 +235,7 @@ if __name__ == '__main__':
             'annual_change_params_2': [0.0]*10,
             'annual_change_params_3': [0.0]*10, 
             'annual_change_params_4': [0.0]*10,
-            'calc_and_output_freq': [60, 60, 3, 1, -1, 0]
+            'calc_and_output_freq': [24, 24, 3, 1, -1, 0]
             #     NPX=number of cycles per hour for water,heat,solute flux calcns
             #     NPY=number of cycles per NPX for gas flux calcns
             #     JOUT,IOUT,KOUT=output frequency for hourly,daily,checkpoint data
@@ -293,7 +295,7 @@ if __name__ == '__main__':
         pft_arctic_g_config, os.path.join(proj_path, "pft_arctic_g"))
 
     # 2.5 循环生成多个天气选项文件
-    for year in range(1970, 1980):
+    for year in year_list:
         opt_config = opt_base_config.copy()
         opt_config['WEATHER_OPTIONS']['scenario_start_date'] = f"0101{year}"
         opt_config['WEATHER_OPTIONS']['scenario_end_date'] = f"3112{year}"
