@@ -41,12 +41,12 @@ if __name__ == '__main__':
             "grid_dims": [1, 1, 1, 1, 1],
             "site_data_file": "site_BR.txt",
             "topography_data_file": "topo_BR.txt",
-            "num_scenes": 10,
+            "num_scenes": 5,
             "num_runs": 1
         },
         "SETUP_SCENES": {
-            "weather_data_files": 'wea1980',
-            "weather_options_files": ['opt' + str(i) for i in range(1970, 1990)],
+            "weather_data_files": ['era5l_' + str(i) for i in range(1980, 1990)],
+            "weather_options_files": ['opt' + str(i) for i in range(1980, 1990)],
             "land_management_files": 'NO',
             "plant_management_files": plant_management_files,
             "soil_output_1": 'NO',
