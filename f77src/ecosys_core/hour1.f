@@ -2280,6 +2280,64 @@ C
       TFACW=(TKW(L,NY,NX)/298.15)**1.75
       WGSGW(L,NY,NX)=WGSG*TFACW
 5060  CONTINUE
+
+C     DIVISION OF CANOPY INTO LAYERS WITH EQUAL LAI
+C
+C     ZT,ZC=heights of combined canopy,PFT canopy
+C     ZL=height to bottom of each canopy layer
+C     ARLFC,ARSTC=leaf,stalk area of combined canopy
+C     ARLFT,ARSTT=leaf,stalk area of combined canopy layer
+C
+      if(I==6.and.J==22.and..false.)then
+      ZC(1,NY,NX)=0.2
+      ARLFT(1,NY,NX)=0.1
+      ARSTT(1,NY,NX)=0.05
+      endif
+      ZT(NY,NX)=0.0
+      DO 9685 NZ=1,NP(NY,NX)
+      ZT(NY,NX)=AMAX1(ZT(NY,NX),ZC(NZ,NY,NX))
+9685  CONTINUE
+      ZL(JC,NY,NX)=ZT(NY,NX)+0.01
+      ZL1(JC,NY,NX)=ZL(JC,NY,NX)
+      ZL1(0,NY,NX)=0.0
+      ART=(ARLFC(NY,NX)+ARSTC(NY,NX))/JC
+      IF(ART.GT.ZEROS(NY,NX))THEN
+      DO 2765 L=JC,2,-1
+      ARL=ARLFT(L,NY,NX)+ARSTT(L,NY,NX)
+      IF(ARL.GT.1.01*ART)THEN
+      DZL=ZL(L,NY,NX)-ZL(L-1,NY,NX)
+      ZL1(L-1,NY,NX)=ZL(L-1,NY,NX)+0.5*AMIN1(1.0,(ARL-ART)/ARL)*DZL
+      ELSEIF(ARL.LT.0.99*ART)THEN
+      ARX=ARLFT(L-1,NY,NX)+ARSTT(L-1,NY,NX)
+      DZL=ZL(L-1,NY,NX)-ZL(L-2,NY,NX)
+      IF(ARX.GT.ZEROS(NY,NX))THEN
+      ZL1(L-1,NY,NX)=ZL(L-1,NY,NX)-0.5*AMIN1(1.0,(ART-ARL)/ARX)*DZL
+      ELSE
+      ZL1(L-1,NY,NX)=ZL(L-1,NY,NX)
+      ENDIF
+      ELSE
+      ZL1(L-1,NY,NX)=ZL(L-1,NY,NX)
+      ENDIF
+C     IF(J.EQ.12)THEN
+C     WRITE(*,3233)'ZL',I,J,NX,NY,L,ZL1(L,NY,NX),ZL1(L-1,NY,NX)
+C    3,ZL(L,NY,NX),ZL(L-1,NY,NX),ART,ARL,ARX
+C    2,DZL,ARLFC(NY,NX),ARSTC(NY,NX),ARLFT(L,NY,NX),ARSTT(L,NY,NX)
+C    3,ARLFT(L-1,NY,NX),ARSTT(L-1,NY,NX)
+C    3,ZL(JC,NY,NX),ZT(NY,NX),ZC(1,NY,NX)
+3233  FORMAT(A8,5I4,30E12.4)
+C     ENDIF
+2765  CONTINUE
+      DO 2770 L=JC,2,-1
+      ZL(L-1,NY,NX)=ZL1(L-1,NY,NX)
+C     ZL(L-1,NY,NX)=AMAX1(0.0,AMIN1(ZL(L,NY,NX)-1.0E-06
+C    2,ZL(L-1,NY,NX)))
+2770  CONTINUE
+      ENDIF
+      if(I==1.and.J==18.and..false.)then
+      write(456,*)J,SSIN(NY,NX)
+      write(456,*)(ZL(L,NY,NX),L=1,JC)
+
+      endif
 C
 C     MULTILAYER CANOPY INTERECEPTION OF DIRECT AND DIFFUSE RADIATION
 C     IN SW AND VISIBLE BANDS BY INCLINATION N, AZIMUTH M, LAYER L,
@@ -2295,6 +2353,14 @@ C     SSIN,TYSIN=sine of solar,sky angles
 C     RADC,RADP=total SW,PAR absorbed by canopy
 C     CFX=clumping factor for self-shading
 C
+      if(I==6.and.J==22.and..false.)then
+      ARLFL(1,1,1,1,NY,NX)=0.1
+      ARSTK(1,1,1,NY,NX)=0.05
+      ARLFP(1,NY,NX)=0.1
+      SURF(:,1,1,1,1,NY,NX)=(/0.025,0.025,0.025,0.025/)
+      SURFB(:,1,1,1,NY,NX)=(/0.0125,0.0125,0.0125,0.0125/)
+      endif
+
       ARLSS(NY,NX)=0.0
       DO 1135 NZ=1,NP(NY,NX)
       ARLFS(NZ,NY,NX)=0.0
@@ -2310,6 +2376,33 @@ C
       ARLSS(NY,NX)=ARLSS(NY,NX)+ARSTK(L,NB,NZ,NY,NX)
       ENDIF
 1135  CONTINUE
+
+C     RESET ARRAYS OF SUNLIT AND SHADED LEAF AREAS IN DIFFERENT
+C     LAYERS AND ANGLE CLASSES
+C
+C     TSURF,TSURFB,SURF,SURFB=leaf,stalk total,PFT surface area
+C
+      DO 1150 NZ=1,NP(NY,NX)
+      DO 1150 L=1,JC
+      DO 1150 N=1,4
+      TSURF(N,L,NZ,NY,NX)=0.0
+      TSURFB(N,L,NZ,NY,NX)=0.0
+1150  CONTINUE
+      DO 1200 NZ=1,NP(NY,NX)
+      DO 1200 NB=1,NBR(NZ,NY,NX)
+      DO 1200 L=1,JC
+      IF(ZL(L-1,NY,NX).GT.DPTHS(NY,NX)-ZERO
+     2.AND.ZL(L-1,NY,NX).GT.DPTH0(NY,NX)-ZERO)THEN
+      DO 1205 N=1,4
+      DO 1210 K=1,25
+      TSURF(N,L,NZ,NY,NX)=TSURF(N,L,NZ,NY,NX)+SURF(N,L,K,NB,NZ,NY,NX)
+1210  CONTINUE
+      TSURFB(N,L,NZ,NY,NX)=TSURFB(N,L,NZ,NY,NX)
+     2+SURFB(N,L,NB,NZ,NY,NX)
+1205  CONTINUE
+      ENDIF
+1200  CONTINUE
+
       IF(SSIN(NY,NX).GT.ZERO)THEN
       RAD(NY,NX)=RADS(NY,NX)*SSIN(NY,NX)+RADY(NY,NX)*TYSIN
       RAP(NY,NX)=RAPS(NY,NX)*SSIN(NY,NX)+RAPY(NY,NX)*TYSIN
@@ -2321,6 +2414,10 @@ C
       RAD(NY,NX)=0.0
       RAP(NY,NX)=0.0
       ENDIF
+      if(I==1.and.J==18.and..false.)then
+      write(456,*)RADS(NY,NX),RADY(NY,NX),SSIN(NY,NX),TYSIN
+      write(456,*)'sw,par=',RAD(NY,NX),RAP(NY,NX),CF(1,NY,NX)
+      endif      
       TRADC(NY,NX)=0.0
       TRAPC(NY,NX)=0.0
       DO 1025 NZ=1,NP(NY,NX)
@@ -2415,31 +2512,7 @@ C
       RAFPL(JC+1)=0.0
       STOPS=0.0
 C
-C     RESET ARRAYS OF SUNLIT AND SHADED LEAF AREAS IN DIFFERENT
-C     LAYERS AND ANGLE CLASSES
-C
-C     TSURF,TSURFB,SURF,SURFB=leaf,stalk total,PFT surface area
-C
-      DO 1150 NZ=1,NP(NY,NX)
-      DO 1150 L=1,JC
-      DO 1150 N=1,4
-      TSURF(N,L,NZ,NY,NX)=0.0
-      TSURFB(N,L,NZ,NY,NX)=0.0
-1150  CONTINUE
-      DO 1200 NZ=1,NP(NY,NX)
-      DO 1200 NB=1,NBR(NZ,NY,NX)
-      DO 1200 L=1,JC
-      IF(ZL(L-1,NY,NX).GT.DPTHS(NY,NX)-ZERO
-     2.AND.ZL(L-1,NY,NX).GT.DPTH0(NY,NX)-ZERO)THEN
-      DO 1205 N=1,4
-      DO 1210 K=1,25
-      TSURF(N,L,NZ,NY,NX)=TSURF(N,L,NZ,NY,NX)+SURF(N,L,K,NB,NZ,NY,NX)
-1210  CONTINUE
-      TSURFB(N,L,NZ,NY,NX)=TSURFB(N,L,NZ,NY,NX)
-     2+SURFB(N,L,NB,NZ,NY,NX)
-1205  CONTINUE
-      ENDIF
-1200  CONTINUE
+
 C
 C     CALCULATE ABSORPTION, REFLECTION AND TRANSMISSION OF DIRECT AND
 C     DIFFUSE DOWNWARD TOTAL AND VISIBLE RADIATION BY EACH SPECIES
@@ -2807,6 +2880,18 @@ C
       RABPL(L)=RABPL(L-1)
       ENDIF
 2800  CONTINUE
+      if(I==6.and.J==22.and..false.)then
+      write(456,*)'swfwd','pafwd','swbak','pabak'      
+      write(456,*)(RAFSL(L),L=0,JC+1)
+      write(456,*)(RAFPL(L),L=0,JC+1)
+      write(456,*)(RABSL(L),L=0,JC+1)
+      write(456,*)(RABPL(L),L=0,JC+1)
+      write(456,*)'parz'
+      DO L=1,JC
+      write(456,*)((PAR(N,M,L,1,NY,NX),N=1,4),M=1,4)
+      write(456,*)((PARDIF(N,M,L,1,NY,NX),N=1,4),M=1,4)
+      ENDDO
+      endif
 C
 C     RADIATION AT GROUND SURFACE IF NO CANOPY
 C
@@ -2831,6 +2916,9 @@ C
       RADP(NZ,NY,NX)=0.0
 125   CONTINUE
       ENDIF
+      if(I==1.and.J==18.and..false.)then
+      write(456,*)'csw,cpar',RADC(1,NY,NX),RADP(1,NY,NX)
+      endif      
 C
 C     CANOPY AND GROUND SKY FRACTIONS USED FOR BOUNDARY LAYER CALCULNS
 C
@@ -2851,6 +2939,9 @@ C
       FRADP(NZ,NY,NX)=0.0
 146   CONTINUE
       ENDIF
+      if(I==1.and.J==18.and..false.)then
+      write(456,*)'fpar',FRADP(1,NY,NX)
+      endif      
 C     IF(NX.EQ.4.AND.NY.EQ.5)THEN
 C     DO 140 NZ=1,NP(NY,NX)
 C     WRITE(*,1926)'CANOPY',IYRC,I,J,NX,NY,NZ,FRADP(NZ,NY,NX)
@@ -2864,53 +2955,7 @@ C    5,SSIN(NY,NX),DPTHS(NY,NX),FRADPT
 140   CONTINUE
 C     ENDIF
 C
-C     DIVISION OF CANOPY INTO LAYERS WITH EQUAL LAI
-C
-C     ZT,ZC=heights of combined canopy,PFT canopy
-C     ZL=height to bottom of each canopy layer
-C     ARLFC,ARSTC=leaf,stalk area of combined canopy
-C     ARLFT,ARSTT=leaf,stalk area of combined canopy layer
-C
-      ZT(NY,NX)=0.0
-      DO 9685 NZ=1,NP(NY,NX)
-      ZT(NY,NX)=AMAX1(ZT(NY,NX),ZC(NZ,NY,NX))
-9685  CONTINUE
-      ZL(JC,NY,NX)=ZT(NY,NX)+0.01
-      ZL1(JC,NY,NX)=ZL(JC,NY,NX)
-      ZL1(0,NY,NX)=0.0
-      ART=(ARLFC(NY,NX)+ARSTC(NY,NX))/JC
-      IF(ART.GT.ZEROS(NY,NX))THEN
-      DO 2765 L=JC,2,-1
-      ARL=ARLFT(L,NY,NX)+ARSTT(L,NY,NX)
-      IF(ARL.GT.1.01*ART)THEN
-      DZL=ZL(L,NY,NX)-ZL(L-1,NY,NX)
-      ZL1(L-1,NY,NX)=ZL(L-1,NY,NX)+0.5*AMIN1(1.0,(ARL-ART)/ARL)*DZL
-      ELSEIF(ARL.LT.0.99*ART)THEN
-      ARX=ARLFT(L-1,NY,NX)+ARSTT(L-1,NY,NX)
-      DZL=ZL(L-1,NY,NX)-ZL(L-2,NY,NX)
-      IF(ARX.GT.ZEROS(NY,NX))THEN
-      ZL1(L-1,NY,NX)=ZL(L-1,NY,NX)-0.5*AMIN1(1.0,(ART-ARL)/ARX)*DZL
-      ELSE
-      ZL1(L-1,NY,NX)=ZL(L-1,NY,NX)
-      ENDIF
-      ELSE
-      ZL1(L-1,NY,NX)=ZL(L-1,NY,NX)
-      ENDIF
-C     IF(J.EQ.12)THEN
-C     WRITE(*,3233)'ZL',I,J,NX,NY,L,ZL1(L,NY,NX),ZL1(L-1,NY,NX)
-C    3,ZL(L,NY,NX),ZL(L-1,NY,NX),ART,ARL,ARX
-C    2,DZL,ARLFC(NY,NX),ARSTC(NY,NX),ARLFT(L,NY,NX),ARSTT(L,NY,NX)
-C    3,ARLFT(L-1,NY,NX),ARSTT(L-1,NY,NX)
-C    3,ZL(JC,NY,NX),ZT(NY,NX),ZC(1,NY,NX)
-3233  FORMAT(A8,5I4,30E12.4)
-C     ENDIF
-2765  CONTINUE
-      DO 2770 L=JC,2,-1
-      ZL(L-1,NY,NX)=ZL1(L-1,NY,NX)
-C     ZL(L-1,NY,NX)=AMAX1(0.0,AMIN1(ZL(L,NY,NX)-1.0E-06
-C    2,ZL(L-1,NY,NX)))
-2770  CONTINUE
-      ENDIF
+
 C
 C     CANOPY ZERO PLANE AND ROUGHNESS HEIGHTS
 C
@@ -2976,6 +3021,7 @@ C
       TCCAN(NY,NX)=0.0
       TCNET(NY,NX)=0.0
       RECO(NY,NX)=0.0
+      QDRAIZ(:,NY,NX)=0.0
 C
 C     CANOPY RETENTION OF PRECIPITATION
 C
