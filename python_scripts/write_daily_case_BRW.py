@@ -34,7 +34,7 @@ if __name__ == '__main__':
     year_list = range(1990,2000)
 
     # 1.1 Runscript 配置
-    plant_management_files = ['pft_arctic_g']
+    plant_management_files = ['pft_arctic_p']
     # plant_management_files.extend(['pft_arctic_p'])
     plant_management_files.extend(['pft_arctic_g']*(len(year_list)-1))
 
@@ -47,7 +47,7 @@ if __name__ == '__main__':
             "num_runs": 1
         },
         "SETUP_SCENES": {
-            "weather_data_files": ['era5l_' + str(i) for i in year_list],
+            "weather_data_files": 'era5l_1990', #['era5l_' + str(i) for i in year_list],
             "weather_options_files": ['opt' + str(i) for i in year_list],
             "land_management_files": 'NO',
             "plant_management_files": plant_management_files,
