@@ -354,7 +354,7 @@ C
       IF(L.EQ.3)HEAD(M)='RUNOFF'
       IF(L.EQ.4)HEAD(M)='WATER'
       IF(L.EQ.5)HEAD(M)='DISCHG'
-      IF(L.EQ.6)HEAD(M)='SNOWPACK'
+      IF(L.EQ.6)HEAD(M)='SNOWDEPTH'
       IF(L.EQ.7)HEAD(M)='WTR_1'
       IF(L.EQ.8)HEAD(M)='WTR_2'
       IF(L.EQ.9)HEAD(M)='WTR_3'
