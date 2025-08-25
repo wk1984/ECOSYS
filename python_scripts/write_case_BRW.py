@@ -34,9 +34,9 @@ if __name__ == '__main__':
     year_list = range(1990,2000)
 
     # 1.1 Runscript 配置
-    plant_management_files = ['pft_arctic_g']
+    plant_management_files = ['pft_arctic_p'] * 10
     # plant_management_files.extend(['pft_arctic_p'])
-    plant_management_files.extend(['pft_arctic_g']*(len(year_list)-1))
+#     plant_management_files.extend(['pft_arctic_g']*(len(year_list)-2))
 
     my_config = {
         "SETUP_GENERAL": {
@@ -68,8 +68,8 @@ if __name__ == '__main__':
     my_site_config = {
         "SITE_PARAMETERS": {
             "latitude": 71.28, "altitude": 10.0, "mean_temp_c": -9, "water_table_flag": 2.0,
-            "atm_composition_ppm": [210000.0, 780000.0, 345.0, 1.8, 0.3, 0.005],
-            "climate_grid_hydro_params": [61, 0, -1, 1, 5, 100.0, 0.0],
+            "atm_composition_ppm": [210000.0, 780000.0, 285.0, 1.8, 0.3, 0.005],
+            "climate_grid_hydro_params": [61, 0, -1, 3, 0.3, 0.3, 0.0],
             "bc_surface_runoff_nesw": [0.0, 0.0, 0.0, 0.0],
             "bc_subsurface_flow_nesw": [0.0, 0.0, 0.0, 0.0],
             "dist_water_table_nesw": [0.0, 0.0, 0.0, 0.0],
@@ -95,7 +95,7 @@ if __name__ == '__main__':
     
     depth_list = [0.01, 0.055, 0.1, 0.11, 0.155, 0.2, 0.21, 0.255, 0.3, 0.31, 0.355, 0.4, 0.45, 0.5, 0.55, 0.6, 0.7, 0.9, 1.1, 1.3]
 #     depth_list = [0.01,0.05,0.1,0.15,0.2,0.3,0.4,0.5,0.75,1.0,1.25,1.5,2.0,2.5,3.0,4.0,5.0,6.0,7.0,8.0]
-#     depth_list = [0.01,0.05,0.1,0.15,0.2,0.3,0.4,0.5,0.75,1.0,1.25,1.5,1.75,2.0,2.5,3.0,3.5,4.0,4.5,5.0]
+    depth_list = [0.01,0.05,0.1,0.15,0.2,0.3,0.4,0.5,0.75,1.0,1.25,1.5,1.75,2.0,2.5,3.0,3.5,4.0,4.5,5.0]
     n_depth = len(depth_list)
     
     my_soil_config = {
@@ -215,13 +215,15 @@ if __name__ == '__main__':
     # 1.6 Plant Management Config
     pft_arctic_p_config = {
         "grid_cell": "1 1 1 1",
-        "pft_definitions": [{"crop_file": "sedg61", "planting_file": "sedgp"},
+        "pft_definitions": [
+#         {"crop_file": "sedg61", "planting_file": "sedgp"},
                             {"crop_file": "moss61", "planting_file": "mossp"}
                             ]
     }
     pft_arctic_g_config = {
         "grid_cell": "1 1 1 1",
-        "pft_definitions": [{"crop_file": "sedg61", "planting_file": "NO"},
+        "pft_definitions": [
+#         {"crop_file": "sedg61", "planting_file": "NO"},
                             {"crop_file": "moss61", "planting_file": "NO"}
                             ]
     }
