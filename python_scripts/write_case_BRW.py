@@ -2,6 +2,8 @@ from functions import EcosysIO, simple_collections
 import os
 import numpy as np
 
+from datetime import datetime
+
 proj_path = 'BRW'
 
 if os.path.isdir(proj_path):
@@ -44,7 +46,7 @@ if __name__ == '__main__':
             "site_data_file": "site_BR.txt",
             "topography_data_file": "topo_BR.txt",
             "num_scenes": len(year_list),
-            "num_runs": 1
+            "num_runs": len(year_list),
         },
         "SETUP_SCENES": {
             "weather_data_files": 'wea_cycle', #['era5l_' + str(i) for i in year_list],
@@ -334,3 +336,11 @@ if __name__ == '__main__':
         fid.write('0101\n3112\n')
         fid.write('YES\n' * 50)
     print("文件已成功生成在: wat")
+    
+now = datetime.now()
+current_time = now.strftime('%H:%M:%S')
+
+print('Current Time:', current_time)
+
+# Output:
+# 'Current Time: 14:30:15'
