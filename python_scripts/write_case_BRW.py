@@ -10,17 +10,19 @@ if os.path.isdir(proj_path):
     pass
 else:
     os.mkdir(proj_path)
-    
-def solar_noon(leap,jday,lon):
-    hour=12.0
-    #calculate fraction of year
-    foy=2.0*np.pi*(jday-1.+(hour-12.)/24.)/(365+leap)
-    #equation of time (in minutes)
-    eqtime=229.18*(0.000075+0.001868*np.cos(foy)-0.032077*np.sin(foy) \
-                   -0.014615*np.cos(2.0*foy)-0.040849*np.sin(2.0*foy))
-    #return solar in hour
-    snoon=(720.-4.*lon-eqtime)/60.
+
+
+def solar_noon(leap, jday, lon):
+    hour = 12.0
+    # calculate fraction of year
+    foy = 2.0*np.pi*(jday-1.+(hour-12.)/24.)/(365+leap)
+    # equation of time (in minutes)
+    eqtime = 229.18*(0.000075+0.001868*np.cos(foy)-0.032077*np.sin(foy)
+                     - 0.014615*np.cos(2.0*foy)-0.040849*np.sin(2.0*foy))
+    # return solar in hour
+    snoon = (720.-4.*lon-eqtime)/60.
     return snoon
+
 
 # =======================================================================
 #                           --- 使用示例 ---
@@ -32,8 +34,8 @@ if __name__ == '__main__':
     oth_handler = simple_collections()
 
     # 1. 定义所有配置字典
-    
-    year_list = range(1990,2000)
+
+    year_list = range(1990, 1993)
 
     # 1.1 Runscript 配置
     plant_management_files = ['pft_arctic_p'] * 10
@@ -46,10 +48,11 @@ if __name__ == '__main__':
             "site_data_file": "site_BR.txt",
             "topography_data_file": "topo_BR.txt",
             "num_scenes": len(year_list),
-            "num_runs": len(year_list),
+            "num_runs": 1,
         },
         "SETUP_SCENES": {
-            "weather_data_files": 'wea_cycle', #['era5l_' + str(i) for i in year_list],
+            # ['era5l_' + str(i) for i in year_list],
+            "weather_data_files": 'wea_cycle',
             "weather_options_files": ['opt' + str(i) for i in year_list],
             "land_management_files": 'NO',
             "plant_management_files": plant_management_files,
@@ -76,7 +79,7 @@ if __name__ == '__main__':
             "bc_subsurface_flow_nesw": [0.0, 0.0, 0.0, 0.0],
             "dist_water_table_nesw": [0.0, 0.0, 0.0, 0.0],
             "lower_bc_water_flow": 0.0,
-            "width_we_column": 1.0, 
+            "width_we_column": 1.0,
             "width_ns_row": 1.0
         }
     }
@@ -84,117 +87,117 @@ if __name__ == '__main__':
     # 1.3 Topography Data 配置
     my_topo_config = {
         "TOPOGRAPHY_PARAMETERS": {
-            "inner_grid_structure": [1, 1, 1, 1], 
+            "inner_grid_structure": [1, 1, 1, 1],
             "landscape_aspect_deg": 0.0,
-            "slope_ew_deg": 0.0, 
-            "slope_ns_deg": 0.0, 
+            "slope_ew_deg": 0.0,
+            "slope_ns_deg": 0.0,
             "placeholder_value": 0.0,
             "soil_data_file": "soil_BR.txt"
         }
     }
 
     # 1.4 Soil Data 配置
-    
+
     depth_list = [0.01, 0.055, 0.1, 0.11, 0.155, 0.2, 0.21, 0.255, 0.3, 0.31, 0.355, 0.4, 0.45, 0.5, 0.55, 0.6, 0.7, 0.9, 1.1, 1.3]
 #     depth_list = [0.01,0.05,0.1,0.15,0.2,0.3,0.4,0.5,0.75,1.0,1.25,1.5,2.0,2.5,3.0,4.0,5.0,6.0,7.0,8.0]
-    depth_list = [0.01,0.05,0.1,0.15,0.2,0.3,0.4,0.5,0.75,1.0,1.25,1.5,1.75,2.0,2.5,3.0,3.5,4.0,4.5,5.0]
+    depth_list = [0.01, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0]
     n_depth = len(depth_list)
-    
+
     my_soil_config = {
         "SOIL_GLOBALS": {
-            'water_potential_fc_mpa': -0.03, 
-            'water_potential_wp_mpa': -1.5, 
+            'water_potential_fc_mpa': -0.03,
+            'water_potential_wp_mpa': -1.5,
             'wet_soil_albedo': 0.12,
-            'litter_ph': 3.72, 
-            'litter_fine_c': 500.0, 
-            'litter_fine_n': 12.5, 
+            'litter_ph': 3.72,
+            'litter_fine_c': 500.0,
+            'litter_fine_n': 12.5,
             'litter_fine_p': 1.25,
-            'litter_woody_c': 0.0, 
-            'litter_woody_n': 0.0, 
-            'litter_woody_p': 0.0, 
+            'litter_woody_c': 0.0,
+            'litter_woody_n': 0.0,
+            'litter_woody_p': 0.0,
             'litter_manure_c': 0.0,
-            'litter_manure_n': 0.0, 
-            'litter_manure_p': 0.0, 
+            'litter_manure_n': 0.0,
+            'litter_manure_p': 0.0,
             'litter_type_plant': 10.0,
-            'litter_type_manure': 0.0, 
-            'num_surface_layers': 1.0, 
+            'litter_type_manure': 0.0,
+            'num_surface_layers': 1.0,
             'num_max_rooting_layers': n_depth,
-            'num_additional_layers_w_data': 0.0, 
-            'num_additional_layers_wo_data': 0.0, 
+            'num_additional_layers_w_data': 0.0,
+            'num_additional_layers_wo_data': 0.0,
             'profile_type': 0.0
         },
-        
+
         "SOIL_LAYERS": {
             'layer_depth_bottom_m': depth_list,
             'bulk_density_mg_m3': [0.36, 0.36, 0.42, 0.46, 0.46, 0.58, 0.69, 0.77, 0.79, 0.64, 0.55, 0.36, 0.36, 0.36, 0.79, 0.64, 0.55, 0.36, 0.36, 0.36],
-            'field_capacity_m3_m3': [0.38, 0.38, 0.38, 0.43, 0.43, 0.43, 0.47, 0.47, 0.47, 0.43, 0.39, 0.25, 0.25, 0.25, 0.47, 0.43, 0.39, 0.25, 0.25, 0.25], 
+            'field_capacity_m3_m3': [0.38, 0.38, 0.38, 0.43, 0.43, 0.43, 0.47, 0.47, 0.47, 0.43, 0.39, 0.25, 0.25, 0.25, 0.47, 0.43, 0.39, 0.25, 0.25, 0.25],
             'wilting_point_m3_m3': [0.16, 0.16, 0.16, 0.13, 0.13, 0.13, 0.14, 0.14, 0.14, 0.14, 0.08, 0.11, 0.11, 0.11, 0.14, 0.14, 0.08, 0.11, 0.11, 0.11],
-            'vertical_ksat_mm_h': [16.0, 16.0, 16.0, 4.5, 4.5, 4.5, 22.6, 22.6, 22.6, 22.6, 22.6, 545.0, 545.0, 545.0, 22.6, 545.0, 545.0, 545.0, 545.0, 545.0], 
+            'vertical_ksat_mm_h': [16.0, 16.0, 16.0, 4.5, 4.5, 4.5, 22.6, 22.6, 22.6, 22.6, 22.6, 545.0, 545.0, 545.0, 22.6, 545.0, 545.0, 545.0, 545.0, 545.0],
             'lateral_ksat_mm_h': [-1.0]*n_depth,
             'sand_contents_kg_mg': [410, 410, 410, 410, 410, 311, 311, 335, 335, 462, 462, 361, 361, 361, 335, 462, 462, 361, 361, 361],
-            'silt_contents_kg_mg': [318, 318, 318, 318, 318, 517, 517, 382, 382, 68, 68, 517, 517, 517, 382, 68, 68, 517, 517, 517], 
-            'macropore': [0]*n_depth, 
+            'silt_contents_kg_mg': [318, 318, 318, 318, 318, 517, 517, 382, 382, 68, 68, 517, 517, 517, 382, 68, 68, 517, 517, 517],
+            'macropore': [0]*n_depth,
             'rock_fraction': [0]*n_depth,
             'ph': [5.55, 5.55, 5.55, 5.25, 5.25, 5.16, 5.16, 5.16, 5.16, 5.16, 5.16, 5.06, 5.06, 5.06, 5.16, 5.16, 5.16, 5.06, 5.06, 5.06],
             'cation_exchange_capacity': [28.1, 28.1, 28.1, 28.1, 28.1, 28.1, 28.1, 29.9, 20.1, 19.7, 19.7, 19.7, 19.7, 19.7, 20.1, 19.7, 19.7, 19.7, 19.7, 19.7],
             'anion_exchange_capacity': [3]*n_depth,
             'total_soc_kg_mg': [448.0, 448.0, 395.0, 342.0, 343.0, 203.0, 135.0, 124.0, 121.0, 129.0, 123.0, 166.0, 166.0, 166.0, 121.0, 129.0, 123.0, 166.0, 166.0, 166.0],
-            'poc_kg_mg': [0.0]*n_depth, 
-            'son_g_mg': [17.9, 17.9, 15.8, 15.2, 15.2, 10.1, 7.7, 8.3, 8.1, 8.6, 8.2, 11.1, 11.1, 11.1, 8.1, 8.6, 8.2, 11.1, 11.1, 11.1], 
+            'poc_kg_mg': [0.0]*n_depth,
+            'son_g_mg': [17.9, 17.9, 15.8, 15.2, 15.2, 10.1, 7.7, 8.3, 8.1, 8.6, 8.2, 11.1, 11.1, 11.1, 8.1, 8.6, 8.2, 11.1, 11.1, 11.1],
             'sop_g_mg': [-1.0]*n_depth,
             'soluble_exch_nh4_g_mg': [3]*n_depth,
             'soluble_exch_no3_g_mg': [12]*n_depth,
             'soluble_exch_h2po4_g_mg': [10]*n_depth,
-            'soluble_al_g_mg': [-1]*n_depth,  
-            'soluble_fe_g_mg': [-1]*n_depth, 
-            'soluble_ca_g_mg': [40]*n_depth, 
-            'soluble_mg_g_mg': [0]*n_depth, 
+            'soluble_al_g_mg': [-1]*n_depth,
+            'soluble_fe_g_mg': [-1]*n_depth,
+            'soluble_ca_g_mg': [40]*n_depth,
+            'soluble_mg_g_mg': [0]*n_depth,
             'soluble_na_g_mg': [0.07]*n_depth,
-            'soluble_k_g_mg': [0]*n_depth, 
+            'soluble_k_g_mg': [0]*n_depth,
             'soluble_so4s_g_mg': [50]*n_depth,
-            'soluble_cl_g_mg': [50]*n_depth, 
+            'soluble_cl_g_mg': [50]*n_depth,
             'alpo4_mineral_g_mg': [50]*n_depth,
-            'fepo4_mineral_g_mg': [50]*n_depth, 
+            'fepo4_mineral_g_mg': [50]*n_depth,
             'cahpo4_mineral_g_mg': [0]*n_depth,
-            'apatite_mineral_g_mg': [0]*n_depth, 
+            'apatite_mineral_g_mg': [0]*n_depth,
             'aloh3_mineral_g_mg': [1000]*n_depth,
-            'feoh3_mineral_g_mg': [1000]*n_depth, 
+            'feoh3_mineral_g_mg': [1000]*n_depth,
             'caso4_mineral_g_mg': [0]*n_depth,
-            'caco3_mineral_g_mg': [0]*n_depth, 
-            'gapon_ca_nh4': [10]*n_depth,
-            'gapon_ca_h': [10]*n_depth, 
-            'gapon_ca_al': [10]*n_depth,
-            'gapon_ca_mg': [10]*n_depth, 
-            'gapon_ca_na': [10]*n_depth,
-            'gapon_ca_k': [10]*n_depth,
-            'initial_water_contents': [0.0]*n_depth, 
+            'caco3_mineral_g_mg': [0]*n_depth,
+            'gapon_ca_nh4': [1000]*n_depth,
+            'gapon_ca_h': [1000]*n_depth,
+            'gapon_ca_al': [1000]*n_depth,
+            'gapon_ca_mg': [1000]*n_depth,
+            'gapon_ca_na': [1000]*n_depth,
+            'gapon_ca_k': [1000]*n_depth,
+            'initial_water_contents': [0.0]*n_depth,
             'initial_ice_contents': [1.0]*n_depth,
             'initial_c_fine_litter': [0]*n_depth,
             'initial_n_fine_litter': [0]*n_depth,
             'initial_p_fine_litter': [0]*n_depth,
-            'initial_c_woody_litter': [0]*n_depth, 
+            'initial_c_woody_litter': [0]*n_depth,
             'initial_n_woody_litter': [0]*n_depth,
-            'initial_p_woody_litter': [0]*n_depth, 
+            'initial_p_woody_litter': [0]*n_depth,
             'initial_c_manure_litter': [0]*n_depth,
-            'initial_n_manure_litter': [0]*n_depth, 
+            'initial_n_manure_litter': [0]*n_depth,
             'initial_p_manure_litter': [0]*n_depth
         }
     }
 
     # 1.5 Crop/PFT Configs
-    cdl_filepath = "ecosim_pft_20240314.nc.cdl" 
-    
-    PFTs = ['sedg61','moss61']
-        
+    cdl_filepath = "ecosim_pft_20240314.nc.cdl"
+
+    PFTs = ['sedg61', 'moss61', 'gr3s61']
+
     for i, pft in enumerate(PFTs):
-        
+
         dump0 = oth_handler.process_cdl_file(cdl_filepath, pft)
-                
-        if i==0:
+
+        if i == 0:
             full_pft_config = dump0
         else:
             full_pft_config[pft] = dump0[pft]
-    
+
     # 1.5 定义 grassp 文件的配置字典
     sedg61p_config = {
         "planting": {
@@ -204,11 +207,20 @@ if __name__ == '__main__':
         },
         "harvesting_events": []
     }
+    
+    gr3sp_config = {
+        "planting": {
+            "date_ddmmyyyy": "15039999",
+            "initial_density_m2": 2E4,
+            "seeding_depth_m": 0.01
+        },
+        "harvesting_events": []
+    }
 
     moss61p_config = {
         "planting": {
             "date_ddmmyyyy": "15039999",
-            "initial_density_m2": 1E4,
+            "initial_density_m2": 2E4,
             "seeding_depth_m": 0.01
         },
         "harvesting_events": []
@@ -218,29 +230,31 @@ if __name__ == '__main__':
     pft_arctic_p_config = {
         "grid_cell": "1 1 1 1",
         "pft_definitions": [
-#         {"crop_file": "sedg61", "planting_file": "sedgp"},
-                            {"crop_file": "moss61", "planting_file": "mossp"}
-                            ]
+            # {"crop_file": "sedg61", "planting_file": "sedgp"},
+            {"crop_file": "gr3s61", "planting_file": "gr3sp"},
+            # {"crop_file": "moss61", "planting_file": "mossp"}
+        ]
     }
     pft_arctic_g_config = {
         "grid_cell": "1 1 1 1",
         "pft_definitions": [
-#         {"crop_file": "sedg61", "planting_file": "NO"},
-                            {"crop_file": "moss61", "planting_file": "NO"}
-                            ]
+            # {"crop_file": "sedg61", "planting_file": "NO"},
+            {"crop_file": "gr3s61", "planting_file": "NO"},
+            # {"crop_file": "moss61", "planting_file": "NO"}
+        ]
     }
 
     # 1.7 Weather Options Config
     opt_base_config = {
         "WEATHER_OPTIONS": {
-            'generate_files_data': "NO", 
-            'generate_checkpoint': "YES", 
-            'resume_from_earlier': "YES",
-            'annual_change_params_1': [0.0]*10, 
+            'generate_files_data': "NO",
+            'generate_checkpoint': "NO",
+            'resume_from_earlier': "NO",
+            'annual_change_params_1': [0.0]*10,
             'annual_change_params_2': [0.0]*10,
-            'annual_change_params_3': [0.0]*10, 
+            'annual_change_params_3': [0.0]*10,
             'annual_change_params_4': [0.0]*10,
-            'calc_and_output_freq': [24, 24, 24, 1, 1, 0]
+            'calc_and_output_freq': [30, 30, 1, 1, 365, 0]
             #     NPX=number of cycles per hour for water,heat,solute flux calcns
             #     NPY=number of cycles per NPX for gas flux calcns
             #     JOUT,IOUT,KOUT=output frequency for hourly,daily,checkpoint data
@@ -282,14 +296,17 @@ if __name__ == '__main__':
     # 2.3 生成植被参数文件
     # io_handler.write_crop_params_from_config(
     #     grass_config, os.path.join(proj_path, "gras61"))
-    
+
     for i, pft in enumerate(PFTs):
         io_handler.write_crop_params_from_config(
             full_pft_config[pft], os.path.join(proj_path, pft))
-    
+
     io_handler.write_planting_data_from_config(
         sedg61p_config, os.path.join(proj_path, "sedgp"))
-    
+
+    io_handler.write_planting_data_from_config(
+        gr3sp_config, os.path.join(proj_path, "gr3sp"))
+
     io_handler.write_planting_data_from_config(
         moss61p_config, os.path.join(proj_path, "mossp"))
 
@@ -304,7 +321,7 @@ if __name__ == '__main__':
         opt_config = opt_base_config.copy()
         opt_config['WEATHER_OPTIONS']['scenario_start_date'] = f"0101{year}"
         opt_config['WEATHER_OPTIONS']['scenario_end_date'] = f"3112{year}"
-        opt_config['WEATHER_OPTIONS']['run_start_date'] = f"0101{year}"
+        opt_config['WEATHER_OPTIONS']['run_start_date'] = f"01011990"
         io_handler.write_weather_options_from_config(
             opt_config, os.path.join(proj_path, f"opt{year}"))
 
@@ -336,7 +353,7 @@ if __name__ == '__main__':
         fid.write('0101\n3112\n')
         fid.write('YES\n' * 50)
     print("文件已成功生成在: wat")
-    
+
 now = datetime.now()
 current_time = now.strftime('%H:%M:%S')
 
