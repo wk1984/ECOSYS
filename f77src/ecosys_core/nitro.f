@@ -30,7 +30,7 @@ C
      4,SPOSC(4,0:4),RDORC(2,0:4),RDORN(2,0:4),RDORP(2,0:4),SPORC(2)
      5,RDOHC(0:4),RDOHN(0:4),RDOHP(0:4),RDOHA(0:4),CSORP(0:4),ZSORP(0:4)
      6,PSORP(0:4),CSORPA(0:4),OSRH(0:4),RUPOX(7,0:5),RGN2F(7,0:5)
-     8,RGOMO(7,0:5),ROXYM(7,0:5),ROXYP(7,0:5),ROXYO(7,0:5)
+     8,RGOMO(7,0:5),ROXYM(7,0:5),ROXYP(7,0:5),ROXYO(7,0:5),RGOMPS(7,0:5)
      9,RDNO3(7,0:5),RDNOB(7,0:5),RDNO2(7,0:5),RDN2B(7,0:5),RDN2O(7,0:5)
      1,RGOMD(7,0:5),RMOMC(2,7,0:5),RINH4(7,0:5),RINO3(7,0:5)
      2,RIPO4(7,0:5),RINB4(7,0:5),RINB3(7,0:5),RIPOB(7,0:5),FOMK(7,0:5)
@@ -194,6 +194,7 @@ C     concentrations that drive microbial density effects on
 C     decomposition
 C
       DO 998 L=0,NL(NY,NX)
+      RGOMPS=0.
       IF(VOLX(L,NY,NX).GT.ZEROS2(NY,NX))THEN
       IF(L.EQ.0.OR.L.GE.NU(NY,NX))THEN
       IF(L.EQ.0)THEN
@@ -202,6 +203,9 @@ C
       THETR=VOLW(0,NY,NX)/VOLR(NY,NX)
       THETZ=AMAX1(0.0,THETR-THETY(L,NY,NX))
       VOLWZ=THETZ*VOLR(NY,NX)
+C      if(IYRC==1980)then
+C      write(116,*)I+J/24.,THETZ,VOLW(0,NY,NX),VOLR(NY,NX)
+C      endif
 C     IF((I/30)*30.EQ.I.AND.J.EQ.15.AND.L.EQ.0)THEN
 C     WRITE(*,8825)'THETZ',I,J,L,THETR,THETZ,VOLWZ,VOLWRX(NY,NX)
 C    2,VOLW(0,NY,NX),POROS(L,NY,NX),FC(0,NY,NX),WP(0,NY,NX)
@@ -243,6 +247,8 @@ C
       TFNX=EXP(25.229-62500/RTK)/ACTV
       ACTVM=1+EXP((195000-STK)/RTK)+EXP((STK-232500)/RTK)
       TFNY=EXP(25.214-62500/RTK)/ACTVM
+C      IF(L==0)WRITE(633,*)TKS(L,NY,NX),OFFSET(NY,NX),TFNX
+C     2,TFNY,OQC(0:KL,L,NY,NX)
 C
 C     OXYI=inhibition of fermenters by O2
 C     ORGCL=SOC used to calculate microbial concentration
@@ -730,6 +736,10 @@ C
       RGOCP=AMIN1(RGOCX,RGOCZ)
       RGOAP=AMIN1(RGOAX,RGOAZ)
       RGOMP=RGOCP+RGOAP
+C      if(L==0)write(413,*)(K+1)*10+N,RGOMP,RGOCP,RGOAP,RGOCY*TFNX
+C     2,FCNP(N,K),OMA(N,K),WFNG,TFNX
+C      if(L==0)write(513,*)(K+1)*10+N,OQC(K,L,NY,NX),OQA(K,L,NY,NX)
+c     2,FOQC,EO2Q,FOQA*EO2A
       IF(RGOMP.GT.ZEROS(NY,NX))THEN
       FGOCP=RGOCP/RGOMP
       FGOAP=RGOAP/RGOMP
@@ -813,6 +823,10 @@ C
       RGOFZ=RGOFY*FSBST*TFNX
       RGOFX=AMAX1(0.0,OQC(K,L,NY,NX)*FOQC*ECHZ)
       RGOMP=AMIN1(RGOFX,RGOFZ)
+C      if(L==0)write(413,*)(K+1)*10+N,RGOMP,RGOFX,RGOFZ,RGOFY*TFNX
+c     2,FCNP(N,K),OMA(N,K),WFNG,TFNX
+C      if(L==0)write(513,*)(K+1)*10+N,OQC(K,L,NY,NX),COQC(K,L,NY,NX)
+C     2,FOQC,ECHZ,ECHZ
       FGOCP=1.0
       FGOAP=0.0
       ROXYM(N,K)=0.0
@@ -1354,6 +1368,7 @@ C     RCO2X,RCH3X,RCH4X,RH2GX=CO2,acetate,CH4,H2 production from RGOMO
 C     ROXYO=O2-limited O2 uptake
 C     RVOXA,RVOXB=total O2-lmited (1)NH4,(2)NO2,(3)CH4 oxidation
 C
+      RGOMPS(N,K)=RGOMP
       RGOMO(N,K)=RGOMP*WFN(N,K)
       RCO2X(N,K)=RGOMO(N,K)
       RCH3X(N,K)=0.0
@@ -1365,6 +1380,7 @@ C
       RVOXB(N)=RVOXPB*WFN(N,K)
       ENDIF
       ELSEIF(N.EQ.4.OR.N.EQ.7)THEN
+      RGOMPS(N,K)=RGOMP
       RGOMO(N,K)=RGOMP
       RCO2X(N,K)=0.333*RGOMO(N,K)
       RCH3X(N,K)=0.667*RGOMO(N,K)
@@ -1376,6 +1392,7 @@ C
       RH2GX(N,K)=0.0
       ENDIF
       ELSEIF(N.EQ.5)THEN
+      RGOMPS(N,K)=RGOMP
       RGOMO(N,K)=RGOMP
       IF(K.LE.4)THEN
       RCO2X(N,K)=0.50*RGOMO(N,K)
@@ -2452,6 +2469,7 @@ C     ENDIF
 750   CONTINUE
       ENDIF
 760   CONTINUE
+C      if(L==0)write(111,*)sum(RGOMO),sum(RGOMPS),SUM(OQC(:,L,NY,NX))
 C
 C     CHEMODENITRIFICATION
 C
@@ -2758,6 +2776,10 @@ C     TFNX=temperature stress effect
 C     OSRH=total SOC
 C     FCNK,FCPK=N,P limitation to microbial activity in each K
 C
+C      if(IYRC==1980 .and. L==0)then
+C      write(115,*)I+J/24.,K,ROQCK(K),VOLWZ,COSC
+C     2,DCKD,COQC(K,L,NY,NX),TFNX
+C      endif
       DO 785 M=1,4
       IF(OSC(M,K,L,NY,NX).GT.ZEROS(NY,NX))THEN
       CNS(M,K)=AMAX1(0.0,OSN(M,K,L,NY,NX)/OSC(M,K,L,NY,NX))
@@ -2988,6 +3010,9 @@ C    5,FOSRH(K,L,NY,NX),TCGOQC(K),OQCX
 591   FORMAT(A8,6I4,40E12.4)
 C     ENDIF
 1790  CONTINUE
+C      if(L==0)then
+C      write(110,*)TOQCK(L,NY,NX)
+C      endif
 C
 C     REDISTRIBUTE AUTOTROPHIC DECOMPOSITION PRODUCTS AMONG
 C     HETEROTROPHIC SUBSTRATE-MICROBE COMPLEXES
