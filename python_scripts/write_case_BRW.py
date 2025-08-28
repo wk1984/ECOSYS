@@ -35,12 +35,16 @@ if __name__ == '__main__':
 
     # 1. 定义所有配置字典
 
-    year_list = range(1990, 1993)
+    year_list = range(1990, 2011)
 
     # 1.1 Runscript 配置
-    plant_management_files = ['pft_arctic_p'] * 10
+    plant_management_files = ['pft_arctic_g'] * 20 #len(year_list)
     # plant_management_files.extend(['pft_arctic_p'])
-#     plant_management_files.extend(['pft_arctic_g']*(len(year_list)-2))
+    plant_management_files.extend(['pft_arctic_p']*(len(year_list)-20))
+
+    weather_files = ['era5l_1951']*len(year_list)
+    # weather_files.extend(['era5l_1951']*5)
+    # weather_files.extend(['era5l_' + str(i) for i in range(1990, 1993)])
 
     my_config = {
         "SETUP_GENERAL": {
@@ -52,7 +56,7 @@ if __name__ == '__main__':
         },
         "SETUP_SCENES": {
             # ['era5l_' + str(i) for i in year_list],
-            "weather_data_files": 'wea_cycle',
+            "weather_data_files": weather_files,
             "weather_options_files": ['opt' + str(i) for i in year_list],
             "land_management_files": 'NO',
             "plant_management_files": plant_management_files,
@@ -101,7 +105,10 @@ if __name__ == '__main__':
     depth_list = [0.01, 0.055, 0.1, 0.11, 0.155, 0.2, 0.21, 0.255, 0.3, 0.31, 0.355, 0.4, 0.45, 0.5, 0.55, 0.6, 0.7, 0.9, 1.1, 1.3]
 #     depth_list = [0.01,0.05,0.1,0.15,0.2,0.3,0.4,0.5,0.75,1.0,1.25,1.5,2.0,2.5,3.0,4.0,5.0,6.0,7.0,8.0]
     depth_list = [0.01, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0]
+    depth_list = [0.01, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0, 3.25, 3.5]
     n_depth = len(depth_list)
+    
+    print(n_depth, 'soil nodes')
 
     my_soil_config = {
         "SOIL_GLOBALS": {
@@ -211,7 +218,7 @@ if __name__ == '__main__':
     gr3sp_config = {
         "planting": {
             "date_ddmmyyyy": "15039999",
-            "initial_density_m2": 2E4,
+            "initial_density_m2": 5E3,
             "seeding_depth_m": 0.01
         },
         "harvesting_events": []
@@ -220,7 +227,7 @@ if __name__ == '__main__':
     moss61p_config = {
         "planting": {
             "date_ddmmyyyy": "15039999",
-            "initial_density_m2": 2E4,
+            "initial_density_m2": 1E4,
             "seeding_depth_m": 0.01
         },
         "harvesting_events": []
@@ -254,7 +261,7 @@ if __name__ == '__main__':
             'annual_change_params_2': [0.0]*10,
             'annual_change_params_3': [0.0]*10,
             'annual_change_params_4': [0.0]*10,
-            'calc_and_output_freq': [30, 30, 1, 1, 365, 0]
+            'calc_and_output_freq': [10, 10, 24, 1, 365, 0]
             #     NPX=number of cycles per hour for water,heat,solute flux calcns
             #     NPY=number of cycles per NPX for gas flux calcns
             #     JOUT,IOUT,KOUT=output frequency for hourly,daily,checkpoint data
@@ -319,9 +326,12 @@ if __name__ == '__main__':
     # 2.5 循环生成多个天气选项文件
     for year in year_list:
         opt_config = opt_base_config.copy()
+        if year >=2010:
+            opt_config['WEATHER_OPTIONS']['resume_from_earlier'] = 'YES'
+            opt_config['WEATHER_OPTIONS']['calc_and_output_freq'] = [30, 30, 24, 1, 365, 0]
         opt_config['WEATHER_OPTIONS']['scenario_start_date'] = f"0101{year}"
         opt_config['WEATHER_OPTIONS']['scenario_end_date'] = f"3112{year}"
-        opt_config['WEATHER_OPTIONS']['run_start_date'] = f"01011990"
+        opt_config['WEATHER_OPTIONS']['run_start_date'] = f"3112{year-1}"
         io_handler.write_weather_options_from_config(
             opt_config, os.path.join(proj_path, f"opt{year}"))
 
